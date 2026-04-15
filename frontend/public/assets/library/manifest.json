@@ -1,0 +1,6 @@
+{
+  "description": "Shared asset library for WorldSeed scenes. AI agents and humans can pick images from here when creating new worlds.",
+  "usage": "Copy selected images to frontend/public/assets/scenes/{scene_id}/agents/ or entities/. Set asset_pack in ui.json.",
+  "agents": [],
+  "entities": []
+}

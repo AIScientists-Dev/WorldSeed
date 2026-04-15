@@ -1,0 +1,563 @@
+/* WorldSeed — World View styles
+ *
+ * Collage art principles (collage-art-ui skill):
+ * - Depth-2 layered shadows, consistent upper-left light source
+ * - Image desaturation for aged-print cohesion
+ * - Gradient scrim for text readability
+ * - Deterministic rotation (zones ±1.5deg, entities ±3deg)
+ * - Paper texture background
+ * - Warm sepia palette throughout (60-30-10 rule)
+ *
+ * Scene types (from ui-config-loader registry):
+ * - zone:   .zone-card    — focal tier, large background-image cards
+ * - card:   .entity-card  — tertiary tier, small semi-transparent scraps
+ * - avatar: .agent-dot    — accent tier, circular portraits
+ *
+ * Hardcoded colors kept intentionally:
+ * - #fff on image scrims: white text on dark gradient is universal across themes
+ * - rgba(0,0,0,...) in shadows: neutral black shadows work with all themes
+ * - rgba(255,255,255,...) borders on image overlays: universal light border on dark images
+ * - Image CSS filters (saturate/sepia/contrast): art direction, not theme
+ */
+
+/* ── Map viewport + canvas (embedded in dashboard) ── */
+
+.map-viewport {
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  flex: 1;
+}
+
+/* Theater mode — promote viewport to fullscreen, no panel collapse needed */
+.map-viewport.theater-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-theater-viewport);
+  width: 100vw;
+  height: 100vh;
+}
+.map-viewport:active {
+  cursor: grabbing;
+}
+.map-canvas {
+  position: relative;
+  width: 4000px;
+  height: 3000px;
+}
+.map-selected {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+/* Free entities — lighter version of entity-card paper cutout */
+.map-free-entity {
+  background: #FDFCFA;
+  border: 2px solid #F5F0E8;
+  color: var(--bright);
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: var(--font-data);
+  font-size: 11px;
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.12),
+    0 3px 8px rgba(40, 35, 28, 0.06);
+  transition: scale var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
+}
+.map-free-entity:hover {
+  scale: 1.04;
+  box-shadow:
+    0 2px 4px rgba(40, 35, 28, 0.15),
+    0 6px 16px rgba(40, 35, 28, 0.1);
+}
+
+/* ── Rice paper background with subtle texture ── */
+
+.paper-bg {
+  background-color: var(--bg-void);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* ── Zone Cards (focal tier) ── */
+
+.zone-card {
+  border-radius: 4px;
+  background: #E9E5DD;
+  border: 3px solid #f5f0e8;
+  transition: scale var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
+}
+/* No resting shadow — zones are background tier; lift only on hover.
+   Scale only (no rotation override) — collage rotation preserved on hover. */
+.zone-card:hover {
+  scale: 1.03;
+  box-shadow:
+    0 3px 8px rgba(60, 50, 40, 0.22),
+    0 8px 24px rgba(60, 50, 40, 0.18);
+  z-index: var(--z-card-hover) !important;
+}
+
+/* Zone images — aged print feel, slightly transparent so paper shows through */
+.zone-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.65) sepia(0.08) contrast(1.05);
+  opacity: 0.82;
+}
+
+/* Dual scrim — top for label readability, bottom for entity card contrast */
+.zone-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 30%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 35%);
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* Zone label — collage-art-ui 9.3 image-label style */
+/* #fff kept: white text on dark image scrim is universal */
+.zone-label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  text-align: center;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  letter-spacing: 1.5px;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zone-label-flat {
+  color: #5c4d3c;
+  text-shadow: none;
+}
+.zone-subtitle {
+  position: absolute;
+  top: 26px;
+  left: 8px;
+  right: 8px;
+  text-align: center;
+  z-index: 1;
+  font-family: var(--font-data);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.zone-subtitle-flat {
+  color: #5c4d3c;
+  text-shadow: none;
+}
+
+/* ── Entity Cards (tertiary tier — paper cutout with white edge) ── */
+
+.entity-card {
+  position: relative;
+  display: inline-grid;
+  border: 2.5px solid #F5F0E8;
+  border-radius: 2px;
+  background: #FDFCFA;
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.20),
+    0 6px 16px rgba(40, 35, 28, 0.15),
+    0 12px 24px rgba(40, 35, 28, 0.06);
+  padding: 3px 5px 3px;
+  transition: scale var(--duration-slow) var(--ease-out), translate var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
+  cursor: pointer;
+  max-width: 82px;
+  overflow: hidden;
+}
+/* Compact mode for dense zones — smaller cards, less shadow */
+.entity-card-compact {
+  max-width: 56px;
+  padding: 2px 4px;
+  border-width: 1.5px;
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.12),
+    0 2px 6px rgba(40, 35, 28, 0.06);
+}
+.entity-card-compact .entity-card-fallback { font-size: 8px; }
+.entity-card-compact .entity-card-value { display: none; }
+.entity-card-compact .entity-card-img { width: 28px; height: 28px; }
+
+/* Hover: "picked up" — lift + deeper shadow. No z-index change (would cover agent row). */
+.entity-card:hover {
+  scale: 1.05;
+  translate: 0 -2px;
+  box-shadow:
+    0 2px 4px rgba(40, 35, 28, 0.20),
+    0 10px 24px rgba(40, 35, 28, 0.18),
+    0 20px 40px rgba(40, 35, 28, 0.08);
+}
+/* Asset image (40×40, shown when PNG exists) */
+.entity-card-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 4px;
+  filter: saturate(0.85) contrast(1.05);
+}
+/* Fallback: entity name as hero text (when no asset image) */
+.entity-card-fallback {
+  font-family: var(--font-narrative);
+  font-size: 10px;
+  font-weight: 400;
+  text-align: center;
+  color: var(--bright);
+  line-height: 1.35;
+  padding: 4px 1px 2px;
+  word-break: break-word;
+}
+/* Label (shown below image, hidden when using fallback name) */
+.entity-card-label {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--bright);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+}
+.entity-card-value {
+  font-family: var(--font-data);
+  font-size: 9px;
+  color: var(--ghost);
+  text-align: center;
+  line-height: 1.3;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Gauge bar (reads bind.bar / bind.bar_max) */
+.entity-gauge-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  margin-top: 3px;
+  overflow: hidden;
+}
+.entity-gauge-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width var(--duration-slow) var(--ease-out);
+}
+.entity-gauge-fill[data-level="good"] { background: var(--slate); }
+.entity-gauge-fill[data-level="warn"] { background: #B45309; }
+
+/* Boost gauge bar visibility inside state-filtered cards (parent filter dims the bar) */
+.entity-state-damaged .entity-gauge-fill,
+.entity-state-destroyed .entity-gauge-fill,
+.entity-state-locked .entity-gauge-fill,
+.entity-state-disabled .entity-gauge-fill {
+  filter: saturate(2) brightness(1.5);
+}
+.entity-gauge-fill[data-level="crit"] { background: var(--rose); }
+
+/* ── Entity State Effects (CSS filter presets, config-driven) ── */
+
+.entity-state-active {
+  filter: brightness(1.15) saturate(1.3);
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.20),
+    0 6px 16px rgba(40, 35, 28, 0.15),
+    0 0 14px rgba(87, 83, 78, 0.2);
+}
+.entity-state-damaged {
+  filter: saturate(0.45) brightness(0.78) sepia(0.1);
+  box-shadow:
+    inset 0 -2px 6px rgba(153, 27, 27, 0.18),
+    0 1px 2px rgba(40, 35, 28, 0.20),
+    0 4px 12px rgba(40, 35, 28, 0.12);
+}
+.entity-state-destroyed {
+  filter: grayscale(0.85) brightness(0.55);
+  opacity: 0.5;
+}
+.entity-state-locked {
+  filter: brightness(0.7) saturate(0.6);
+  opacity: 0.75;
+}
+.entity-state-disabled {
+  filter: grayscale(0.6) brightness(0.65);
+  opacity: 0.4;
+}
+/* Both 'highlighted' (canonical) and 'highlight' (28 existing configs) supported */
+.entity-state-highlighted,
+.entity-state-highlight {
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.20),
+    0 6px 16px rgba(40, 35, 28, 0.15),
+    0 0 0 3px rgba(29, 78, 216, 0.35),
+    0 0 16px rgba(29, 78, 216, 0.15);
+}
+.entity-state-warning {
+  filter: saturate(0.7) brightness(0.9);
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.20),
+    0 0 0 2px rgba(180, 130, 20, 0.4),
+    0 0 10px rgba(180, 130, 20, 0.15);
+}
+
+/* ── Entity Event Animations (one-shot, <500ms) ── */
+
+@keyframes entity-shake {
+  0%, 100% { translate: 0 0; }
+  15% { translate: -4px 0; }
+  30% { translate: 3px 0; }
+  45% { translate: -2px 0; }
+  60% { translate: 2px 0; }
+}
+.entity-anim-shake { animation: entity-shake 0.4s var(--ease-out); }
+
+@keyframes entity-flash-red {
+  0% { box-shadow: 0 0 0 0 rgba(153, 27, 27, 0.6); }
+  100% { box-shadow: 0 0 0 8px rgba(153, 27, 27, 0); }
+}
+.entity-anim-flash-red { animation: entity-flash-red 0.5s var(--ease-out); }
+
+@keyframes entity-flash-green {
+  0% { box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.5); }
+  100% { box-shadow: 0 0 0 8px rgba(15, 118, 110, 0); }
+}
+.entity-anim-flash-green { animation: entity-flash-green 0.5s var(--ease-out); }
+
+@keyframes entity-glow {
+  0%, 100% { box-shadow: 0 1px 2px rgba(40,35,28,0.2), 0 6px 16px rgba(40,35,28,0.15), 0 12px 24px rgba(40,35,28,0.06); }
+  50% { box-shadow: 0 1px 2px rgba(40,35,28,0.2), 0 6px 16px rgba(40,35,28,0.15), 0 0 18px 4px rgba(87,83,78,0.25); }
+}
+.entity-anim-glow { animation: entity-glow 0.6s var(--ease-out); }
+
+@keyframes entity-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.entity-anim-pulse { animation: entity-pulse 0.6s var(--ease-in-out); }
+
+/* ── Agent Dot + Label (accent tier) ── */
+
+.agent-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: scale var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+}
+.agent-dot-initial {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.agent-dot-avatar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.agent-dot:hover {
+  scale: 1.2;
+  box-shadow:
+    /* rgba(255,255,255,...) ring kept: universal light glow on portrait over image */
+    0 0 0 3px rgba(255, 255, 255, 0.6),
+    0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* Agent name — light paper-scrap style (matches entity cards) */
+.agent-name-label {
+  background: color-mix(in srgb, var(--bg-panel) 88%, transparent);
+  color: var(--bright);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: var(--font-narrative);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-shadow: none;
+  border: 0.5px solid var(--border-hi);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.agent-show-value {
+  font-family: var(--font-data);
+  font-size: 8px;
+  opacity: 0.65;
+}
+
+/* ── Detail Panel — warm aesthetic matching map ── */
+
+.detail-panel {
+  background-color: var(--bg-panel);
+  border-color: var(--border);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+.detail-panel h2 {
+  color: var(--bright);
+}
+
+/* Detail panel art — framed with border + shadow */
+.detail-art {
+  filter: saturate(0.65) sepia(0.08) contrast(1.05);
+  border-radius: 6px;
+  border: 2px solid var(--border-hi);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Map Detail (right panel) ── */
+
+.map-detail-back {
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: var(--ghost);
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.1s;
+}
+.map-detail-back:hover { color: var(--bright); }
+
+.map-detail-type {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ghost);
+  background: var(--amber-dim);
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.map-detail-body {
+  padding: 6px 16px 14px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* Session content inside detail panel — constrain widths */
+.map-detail-body .chat-feed {
+  padding: 8px 0;
+  gap: 10px;
+}
+
+.map-detail-body .chat-bubble {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.map-detail-body .chat-bubble.is-user {
+  max-width: 95%;
+}
+
+.map-detail-body .chat-tool {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.map-detail-body .chat-result {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.map-detail-body .tool-long-param {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.map-detail-art-wrap {
+  width: 100%;
+  max-height: 120px;
+  overflow: hidden;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.map-detail-art-wrap img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 120px;
+}
+
+
+/* ── Agent Tab Bar (fixed below header, above scroll) ── */
+
+.agent-tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.agent-tab {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ghost);
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.1s, border-color 0.1s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.agent-tab:hover { color: var(--bright); }
+
+.agent-tab.is-active {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+}
+
+.agent-tab-run-id {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.5;
+  margin-left: 4px;
+}
+

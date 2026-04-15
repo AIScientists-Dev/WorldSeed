@@ -1,0 +1,40 @@
+/* WorldSeed — Components: buttons, status, gateway, general utilities */
+
+/* ═══════════════════════ BUTTONS ═══════════════════════ */
+.btn {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.btn:hover { background: var(--bg-raised); border-color: var(--amber); color: var(--amber); }
+.btn:active { transform: scale(0.97); }
+
+.btn-sm { font-size: 0.65rem; padding: 0.15rem 0.4rem; border: 1px solid var(--border); background: transparent; color: var(--ghost); cursor: pointer; border-radius: 3px; }
+.btn-sm:hover { color: var(--bright); border-color: var(--border-hi); }
+
+/* ═══════════════════════ SHARED ═══════════════════════ */
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ghost);
+  opacity: 0.35;
+}
+
+.text-muted { color: var(--ghost); font-size: 13px; }
+.pad-sm { padding: 4px 0; }

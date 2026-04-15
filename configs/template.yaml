@@ -1,0 +1,183 @@
+# WorldSeed Scene Config — Complete Key Reference
+#
+# This file lists EVERY available key with explanations.
+# Copy it, fill in what you need, delete what you don't.
+#
+# Docs: configs/SCENE_CONFIG.md (syntax), SCENE_DSL.md (expressions)
+
+scene:
+  id: "template"                       # Required. Unique identifier.
+  description: ""                      # Required. What is this world about? Fed to DM for context.
+  dm_knowledge: ""                     # Domain rules the DM needs but agents can't see.
+                                       # Example: hand rankings in poker, damage formulas in combat.
+  tick_interval: 5.0                   # Seconds between ticks. Lower = faster simulation.
+  max_ticks: 100                       # Auto-stop after N ticks. null = unlimited.
+  # timeout_min: null                  # Auto-stop after N minutes.
+  # max_dm_calls: null                 # Skip DM after N total calls (cost control).
+  # default_spawn: {}                  # Default properties for agents that register at runtime.
+  # tick_narrative_time: "~30 minutes" # Story time per tick (for narrative pacing).
+  # narrative_speed: null              # Time multiplier.
+
+  # Import presets — reusable config fragments from configs/presets/
+  # use: []                            # Available presets:
+                                       #   Communication: talk, directed_talk, attempt
+                                       #   Movement:      move_simple, move_connected, same_location_perception
+                                       #   Combat:        attack, rest, steal, elimination_hp, elimination_chips
+                                       #   Exploration:   observation, search, use_item, consume, trade
+                                       #   Systems:       hunger_system, timer, deck, day_night, resource_decay
+
+# narrator is ON by default (style: "storyteller", interval: 10 ticks).
+# narrator: false                      # Disable narrator
+# narrator: "noir"                     # Shorthand — set style only
+# narrator:                            # Full form
+#   style: "storyteller"               #   storyteller|poet|intel|noir|gossip|conspiracy|bureaucrat|gameshow|trickster
+#   interval: 10                       #   Wake every N ticks
+#   prompt: null                       #   Custom prompt — overrides style if set
+
+# --- Entities: world objects ---
+# Every entity has id + type. All other keys become properties (free-form).
+# type: "agent" is reserved — use the agents: section instead.
+entities:
+  - id: room_a
+    type: space
+    connects_to: [room_b]             # list of connected space IDs (used by move_connected preset)
+    # constraints:                     # Numeric bounds enforced on all writes (effects, DM, auto_tick, GM).
+    #   condition: { min: 0, max: 100 }
+  # - id: food_supply
+  #   type: resource
+  #   quantity: 20
+  #   location: room_a
+  #   constraints:
+  #     quantity: { min: 0 }
+
+# --- Templates: reusable agent starting stats ---
+# All keys become properties. Agents reference templates via template: key.
+templates: {}
+  # player:
+  #   hp: 100
+  #   location: room_a
+  #   inventory: {}
+
+# --- Agents: preset characters ---
+# id + template + character card. All other keys become properties (override template).
+agents:
+  - id: agent_1
+    location: room_a                   # Properties go at the top level (flat format).
+    # template: player                 # Inherit properties from templates.player
+    # think_interval: 5                # Seconds between agent wakes. Low (2-3) for active, high (50-99) for waiting.
+    # omniscient: false                # Bypass all perception filtering (for narrator/observer agents).
+    # system: false                    # Engine-internal agent. Hidden from other agents and map.
+    character:                         # Free-form dict. Engine never reads this — it's the SOUL.md.
+      personality: ""                  # Core personality trait
+      goals: []                        # What drives this character
+      knowledge: ""                    # What they know that others don't
+      speaking_style: ""               # How they talk
+      secret: ""                       # Hidden motivation. Creates dramatic tension.
+      # Any other keys work — character is completely free-form.
+      # Good keys: backstory, relationships, weaknesses, drives,
+      #   thinking_guide, emotional_triggers, playbook
+
+# --- Actions: what agents can do ---
+actions:
+  example_action:
+    description: ""                    # Natural language. Shown to agents.
+    # highlight: false                 # Mark action records as chapter markers for observer dashboard.
+    params:                            # Action parameters.
+      - name: target
+        type: entity_ref               # entity_ref | number | string | free_text
+        required: true
+        description: ""                # Hint for LLM agents
+        # enum_from: "$visible"        # DSL expr → dynamic enum of valid values
+        # enum_filter: { type: agent } # Filter enum by entity properties
+    preconditions:                     # All must pass. Empty = always allowed.
+      - { operator: check, left: "$agent.location", op: "==", right: "$target.location" }
+      # Operators: check, exists, not, all, any
+      # Comparisons: ==, !=, >, <, >=, <=, in, contains
+    effects:                           # What changes in the world.
+      - { operator: set, target: "$target.owner", value: "$agent" }
+      # Operators: set, increment, decrement, create_entity, remove_entity,
+      #   add_relationship, remove_relationship, emit_event,
+      #   list_append, list_remove, list_pop_random, rotate, for_each
+      # increment/decrement support: min, max (clamp)
+      # rotate: target, sequence, skip (advance through ordered list)
+      # for_each: match, where, effects (sub-effects with $entity)
+      # Any effect supports: when (conditional execution via precondition)
+    events:                            # Shorthand for emit_event effects.
+      - type: example
+        detail: "$agent did something to $target"
+        ttl: 2                         # Ticks until event expires
+        scope: global                  # global | target_only | admin | custom_scope_name
+        # target: "$target"            # Direct to specific agent (whisper)
+        # push: false                  # true = urgent wake
+        # highlight: false             # true = chapter marker for observer dashboard
+    # dm:                              # Optional. Makes this action DM-judged.
+    #   hint: ""                       # What to judge. Most important field.
+    #   scope: same_location           # Event scope for DM narrative.
+    #   allowed_ops: [set, increment, decrement, emit_event]
+    #   max_effects: 5
+    #   push_events: []                # Event types that auto-get push: true
+    # available_to:                    # Optional. Per-agent visibility filter.
+    #   - { operator: check, left: "$agent.role", op: "==", right: "player" }
+
+# --- Consequences: reactive rules ---
+# Trigger conditions checked after every tick. Fire effects when conditions met.
+consequences: {}
+  # low_food:
+  #   trigger:
+  #     - { operator: check, left: "food_supply.quantity", op: "<", right: 5 }
+  #   effects:
+  #     - { operator: emit_event, type: warning, detail: "Food is running low!", scope: global, push: true, ttl: 3 }
+  #   frequency: on_change             # on_change (default) | every_tick
+  #   # dm:                            # Optional. DM judges when consequence triggers.
+  #   #   hint: "Describe the impact of low food on the group."
+
+# --- Highlights: observer dashboard markers ---
+# Like consequences, but only produce chapter markers — no effects.
+highlights: {}
+  # tension_rising:
+  #   trigger:
+  #     - { operator: check, left: "food_supply.quantity", op: "<", right: 10 }
+  #   label: "Food supply critical"    # Text shown in chapter panel
+  #   frequency: on_change             # on_change (default) | every_tick
+
+# --- Auto-tick: every-tick changes ---
+# Effects that run automatically each tick. Optional condition guard.
+auto_tick: []
+  # - description: "Food decays each tick"
+  #   effects:
+  #     - { operator: decrement, target: "food_supply.quantity", by: 1, min: 0 }
+  #   # condition:                     # Optional guard — only run if all pass
+  #   #   - { operator: check, left: "food_supply.quantity", op: ">", right: 0 }
+
+# --- Perception: who sees what ---
+perception:
+  visibility: []                       # Empty = everyone sees everything.
+    # - { operator: check, left: "$observer.location", op: "==", right: "$entity.location" }
+    # Context vars: $observer (the viewing agent), $entity (the thing being viewed)
+
+  hidden_properties: []                # Properties stripped from other agents' view.
+    # - secret_plan
+    # - mood
+    # Each agent still sees their OWN hidden properties in self_state.
+
+  # event_scopes:                      # Custom event delivery rules.
+  #   same_location:
+  #     rules:
+  #       - { operator: check, left: "$observer.location", op: "==",
+  #           right: "$event_source.location" }
+  #   # Built-in scopes (no config needed): global, target_only, admin
+
+  wake_summary:                        # What state info appears in agent wake notifications.
+    # self_fields: []                  # Agent's own properties. null=don't show, []=all
+    # entities: {}                     # {entity_id: [fields]}. Show specific entities.
+    # entity_types: {}                 # {type: [fields]}. Show entities by type (dynamic).
+    # agent_fields: []                 # Other agents' fields. null=don't show, []=all
+
+# --- Sanity checks: automated tests ---
+# Run with: uv run worldseed validate <config.yaml>
+sanity_checks: []
+  # - name: "agent can move"
+  #   steps:
+  #     - { agent: agent_1, action: move, params: { to: room_b }, expect: success }
+  #     - { assert: "$agent_1.location == room_b" }
+  #   # ticks: 5                       # Advance N ticks before running steps

@@ -1,0 +1,119 @@
+// UI_SCAFFOLD.jsonc — Complete template for creating .ui.json files.
+// Copy this, remove what you don't need, fill in your values.
+// See configs/UI_CONFIG.md for full reference.
+// See frontend/src/lib/ui-fragments.ts for copy-paste building blocks.
+//
+// Rules: first match wins. Put specific (id match) before general (type match).
+// All rules are inline JSON objects — no string references.
+{
+  // Optional: asset pack directory name under frontend/public/assets/scenes/
+  "asset_pack": "",
+
+  // Recommended: default bubble/effect for events not matched by any rule.
+  // Without this, unmatched events have no bubble or animation.
+  "event_defaults": {"bubble": "action"},
+
+  "rules": [
+    // ── Override specific entities FIRST (first match wins) ──
+    // {"match": {"id": "special_room"}, "scene": "zone", "bind": {
+    //   "label": "id", "bar": "integrity", "bar_max": 100
+    // }},
+
+    // ── CONTAINERS (zone / deck) ──
+    // Large card with background image, label, connection lines.
+    // Other entities and agents are placed INSIDE based on their "locate_by" binding.
+    {"match": {"type": "space"}, "scene": "zone", "bind": {
+      "label": "id",              // prop displayed as zone name (default: entity.id)
+      "connections": "connects_to" // array prop → dashed lines between zones
+      // "show": ["oxygen_level"], // first non-null value shown as subtitle
+      // "bar": "integrity",       // optional gauge bar on zone
+      // "bar_max": 100            // bar ceiling (default: 100)
+    }},
+
+    // ── ITEMS (card) ──
+    // Small paper-cutout card placed inside a zone.
+    {"match": {"type": "item"}, "scene": "card", "bind": {
+      "locate_by": "location"     // prop holding zone id to place inside
+      // "show": ["author", "score"] // first non-null value displayed
+    }},
+
+    // ── RESOURCES (card with quantity) ──
+    // {"match": {"type": "resource"}, "scene": "card", "bind": {
+    //   "locate_by": "location", "show": ["quantity"]
+    // }},
+
+    // ── GAUGED ITEMS (card + progress bar + state effects) ──
+    // {"match": {"type": "equipment"}, "scene": "gauge", "bind": {
+    //   "locate_by": "location",
+    //   "bar": "condition",       // prop → gauge bar value
+    //   "bar_max": 100,           // gauge ceiling (default: 100)
+    //   "show": ["status"],
+    //   "state_effects": {
+    //     // Condition formats: "prop=value" | "prop<N" | "prop>N"
+    //     // Available presets: active | damaged | destroyed | locked | disabled | highlighted | warning
+    //     "status=destroyed": "destroyed",  // grayscale, faded, tilted
+    //     "status=active":    "active",     // brighter, subtle glow
+    //     "condition<20":     "damaged",    // desaturated, inset shadow
+    //     "health>80":        "highlighted",// blue accent ring
+    //     "powered=false":    "locked",     // dimmed, reduced opacity
+    //     "removed=true":     "disabled"    // faint grayscale, very low opacity
+    //   }
+    // }},
+
+    // ── AGENTS (avatar) ──
+    // Circular portrait dot placed inside a zone.
+    {"match": {"type": "agent"}, "scene": "avatar", "bind": {
+      "locate_by": "location"     // omit locate_by for free-floating agents
+    }},
+
+    // ── HIDDEN ──
+    // Entity exists in world state but is not rendered on map.
+    {"match": {"type": "game_state"}, "scene": "hidden"}
+  ],
+
+  "events": [
+    // ── Scene-specific overrides FIRST ──
+    // {"match": "accuse", "bubble": "action", "effect": "flash-red"},
+
+    // ── Common dialogue events ──
+    {"match": "talk",          "bubble": "speech"},
+    {"match": "say",           "bubble": "speech"},
+    {"match": "shout",         "bubble": "speech", "effect": "pulse"},
+    {"match": "whisper",       "bubble": "speech"},
+    {"match": "announce",      "bubble": "speech"},
+    {"match": "directed_talk", "bubble": "speech"},
+
+    // ── Common action events ──
+    {"match": "attempt", "bubble": "action", "effect": "glow"},
+    {"match": "observe", "bubble": "action"},
+    {"match": "move",    "bubble": "action"},
+    {"match": "search",  "bubble": "action", "effect": "shake"}
+
+    // ── Additional scene-specific events ──
+    // bubble: "speech" (dialogue bubble) | "action" (action bubble)
+    // effect: "shake" | "flash-red" | "flash-green" | "glow" | "pulse" | omit for none
+    // {"match": "trade",   "bubble": "action", "effect": "glow"},
+    // {"match": "betray",  "bubble": "action", "effect": "shake"},
+    // {"match": "victory", "bubble": "action", "effect": "flash-green"}
+
+    // Events with no matching rule fall back to event_defaults (if set).
+    // So with event_defaults: {"bubble": "action"}, you only need to list
+    // events that are speech-type or have a special effect.
+  ],
+
+  // Manual zone positions on the 4000×3000 canvas.
+  // Zones without layout entries auto-position via deterministic hash.
+  "layout": {
+    // Collage guidelines:
+    // - Overlap 10-20% between adjacent zones for natural feel
+    // - Vary sizes: one large focal zone, a few medium, smaller supporting
+    // - Stagger vertically — avoid grid alignment
+    // - Leave 30-50% empty space
+    // - rotation: tilt degrees (±0.5 to ±2 natural). Omit for hash-based micro-rotation
+    // - z: stacking order (higher = on top). Omit for auto from position
+    //
+    // "main_hall": {"x": 180, "y": 210, "w": 340, "h": 320, "rotation": -1.5},
+    // "side_room": {"x": 15,  "y": 100, "w": 220, "h": 220, "rotation": 1},
+    // "balcony":   {"x": 470, "y": 90,  "w": 220, "h": 230, "rotation": 2}
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "asset_pack": "teahouse",
+  "event_defaults": {
+    "bubble": "action"
+  },
+  "rules": [
+    {
+      "match": {
+        "type": "space"
+      },
+      "scene": "zone",
+      "bind": {
+        "label": "id",
+        "connections": "connects_to"
+      }
+    },
+    {
+      "match": {
+        "type": "item"
+      },
+      "scene": "card",
+      "bind": {
+        "locate_by": "location",
+        "show": [
+          "holder"
+        ]
+      }
+    },
+    {
+      "match": {
+        "type": "prop"
+      },
+      "scene": "card",
+      "bind": {
+        "locate_by": "location"
+      }
+    },
+    {
+      "match": {
+        "type": "agent"
+      },
+      "scene": "avatar",
+      "bind": {
+        "locate_by": "location"
+      }
+    }
+  ],
+  "events": [
+    {
+      "match": "say",
+      "bubble": "speech"
+    },
+    {
+      "match": "whisper",
+      "bubble": "speech"
+    },
+    {
+      "match": "signal",
+      "bubble": "action"
+    },
+    {
+      "match": "pass_item",
+      "bubble": "action",
+      "effect": "glow"
+    },
+    {
+      "match": "accuse",
+      "bubble": "action",
+      "effect": "flash-red"
+    },
+    {
+      "match": "search",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "attempt",
+      "bubble": "action",
+      "effect": "glow"
+    },
+    {
+      "match": "observe",
+      "bubble": "action"
+    },
+    {
+      "match": "move",
+      "bubble": "action"
+    }
+  ],
+  "layout": {
+    "大堂": {
+      "x": 180,
+      "y": 210,
+      "w": 340,
+      "h": 320
+    },
+    "甲号包间": {
+      "x": 15,
+      "y": 100,
+      "w": 220,
+      "h": 220
+    },
+    "乙号包间": {
+      "x": 470,
+      "y": 90,
+      "w": 220,
+      "h": 230
+    },
+    "后院": {
+      "x": 280,
+      "y": 5,
+      "w": 200,
+      "h": 200
+    }
+  }
+}

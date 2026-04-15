@@ -1,0 +1,18 @@
+{
+  "name": "@openclaw/worldseed",
+  "version": "0.1.0",
+  "description": "WorldSeed persistent world channel plugin",
+  "type": "module",
+  "dependencies": {
+    "@sinclair/typebox": "0.34.48",
+    "ws": "8.18.2"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ]
+  },
+  "devDependencies": {
+    "openclaw": "^2026.3.13"
+  }
+}

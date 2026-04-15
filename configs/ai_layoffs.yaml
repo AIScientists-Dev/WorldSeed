@@ -1,0 +1,1944 @@
+# ============================================================
+# AI 裁员之后 — 降本增效浪潮下的职场生存
+#
+# 一家互联网公司刚裁了 30% 的人。剩下的骨架团队要在 10 个 tick 内
+# 交付已经承诺给客户的 Q2 产品迭代。
+# 前主程老周还有 5 天交接期，全部遗留知识都在他脑子里。
+#
+# 核心问题：人少了，活多了，每个人都在自保。
+# 谁在偷偷找工作？谁在悄悄甩锅？谁会先下手为强？
+# dashboard 上的绿色指标和现实之间的裂缝，会不会彻底爆开？
+# ============================================================
+
+scene:
+  id: ai_layoffs
+  description: >
+    一家互联网公司，三周前刚裁了 30% 的人。工位空了不少，显示器拔了，椅子推进桌底。
+    剩下的人——两个开发、一个设计、一个测试、一个远程 VP——要交付 Q2 版本。
+    项目 deadline 没变，KPI 反而涨了。"AI 可以补上嘛"——VP 说。
+    前主程还在交接期，但没人正经跟他聊过。VP 的数据面板上一片绿色。现实不是这样的。
+    更要命的是：二次裁员的谣言已经在健身房和茶水间传开了。
+    每个人都在想：下一个会不会是我？信任是奢侈品，信息是武器，每个人都有自己的算盘。
+    有人在偷偷面试，有人在悄悄甩锅，有人在默默收集证据。
+    当前最紧急的工作物件：
+    - SYS-142-核心流程崩溃（P0，只有老周知道根因）
+    - SYS-201-支付不到账（涉及老周的旧代码，没人敢碰）
+    - PR287-核心模块重构（小马用 AI 重写了老周三年的代码，等 review）
+    - 新版界面设计_v3（阿雯手工打磨 70%，但 VP 想用 AI 版替代）
+    - 交接文档（空的，老周不给钱不写）
+    - 用户数据面板（数字全假，可以被篡改得更假）
+    - 茶水间红牛只剩 3 罐，健身房公告栏有猎头名片
+    【铁律】每个 tick 必须执行一个"实事"action。说话、私语、移动不是实事。
+    不要对物品私语。参考你的角色目标里提到的具体物件决定该做什么。
+  tick_narrative_time: "一天 6 个 tick（早上×2、下午×2、晚上×2）。根据 clock.phase 判断时段：0-1=早上, 2-3=下午, 4-5=晚上。"
+
+entities:
+  # ============================================================
+  # 空间
+  # ============================================================
+
+  - id: 工区
+    type: space
+    description: >
+      开放工区。四十人的工位只坐了五六个。左侧一小簇工位还在用，双屏显示器亮着，
+      桌上堆着红牛罐和外卖盒。右侧大片空工位，灯关了，显示器支臂光秃秃竖着，
+      椅子整齐推进桌底，桌面只剩裸露的电源线。明暗交界线把空间切成"活的"和"死的"两半。
+      墙上白板写着"Q2 上线倒计时"和一个已经过期的日期。
+    connects_to: [会议室, 茶水间, 天台, 机房, 老周工位, 停车场, 健身房]
+
+  - id: 会议室
+    type: space
+    description: >
+      玻璃隔墙的会议室。椭圆白桌，八把椅子只有两三把常用。正面墙上 65 寸大屏亮着
+      项目用户数据面板——进度环形图、折线图，绿色蓝色为主，一切看起来正常。
+      屏幕右上角永远开着 VP 的视频通话窗口。玻璃墙角贴着"每周一 10:00 VP Sync"。
+    connects_to: [工区]
+
+  - id: VP的家
+    type: space
+    description: >
+      VP 王总的居家书房，只通过视频会议可见。胡桃木书桌上一台 MacBook 和超宽显示器，
+      屏幕亮着全绿的项目用户数据面板。书架上的书按颜色排列，落地灯暖黄色。桌面极其整洁。
+      但画面边角穿帮——地上一双小孩卡通拖鞋踢歪了，角落露出客厅沙发和一块乐高积木。
+    connects_to: [停车场]
+
+  - id: 茶水间
+    type: space
+    description: >
+      办公室里的小茶水间。橙色橱柜，台面上摆着咖啡机、电热水壶、微波炉。
+      冰箱门上用磁铁贴着一张老团建照片——二十多个人在笑，很多脸现在已经对不上人了。
+      冰箱旁贴着"请保持清洁"的A4纸，下面有人加了一行"也请保持编制谢谢"。
+      小圆桌配两把椅子。这是办公室里唯一还有点人味的地方。
+    connects_to: [工区, 老周工位]
+
+  - id: 天台
+    type: space
+    description: >
+      公司楼顶天台，未经装饰。灰色防水涂层地面，有些起皮。边缘铁栏杆锈迹斑驳。
+      通风口铁盖上放着两罐没喝完的啤酒和皱巴巴的烟盒。
+      栏杆外是城市夜景——远处写字楼灯光星星点点。风很大。
+      这是最开阔的场景——在这里人会变得诚实。
+    connects_to: [工区]
+
+  - id: 机房
+    type: space
+    description: >
+      小型服务器机房。两排黑色机柜面对面排列形成窄冷通道。机柜正面密密麻麻的指示灯
+      在闪——绿色运行灯、橙色告警灯、偶尔一个红色故障灯。线缆像瀑布垂下。
+      机柜间隙塞着一把折叠椅和一台笔记本电脑——有人临时在这里 debug 留下的。
+      最暗但最"活"的空间——所有机器在转，但没有一个人。
+    connects_to: [工区]
+
+  - id: 老周工位
+    type: space
+    description: >
+      开放工区最角落的工位，和主要区域隔了一段空桌的距离。L 型桌面堆满十五年的东西——
+      键帽磨到发油的 Cherry 键盘，落灰的"2019 年度最佳员工"奖杯，
+      马克杯上印着老团队合影。软木板钉满手写便签和泛黄架构图。
+      桌下两个纸箱，一个装了一半。显示器边框贴着黄色便签："交接剩余：5 天"。
+    connects_to: [工区, 茶水间]
+
+  - id: 停车场
+    type: space
+    description: >
+      地下一层停车场。灯光明亮，车位划线整齐。角落一辆黑色奥迪 A6 是王总的——
+      三周没动了，车位上贴着"VP专用"。消防通道通向楼梯间。
+      晚上下班高峰过后这里很安静，只剩几辆加班族的车。
+      适合不想被楼上看见的对话。
+    connects_to: [工区, B1美食城, VP的家, 已离开]
+
+  - id: B1美食城
+    type: space
+    description: >
+      写字楼旁边商场的负一层美食城。十几家档口——老乡鸡、南城香、兰州拉面、麻辣烫、
+      轻食沙拉，人均 15-25 元。中午十二点挤满了附近写字楼的人，嘈杂到面对面说话要喊。
+      但这反而好——再私密的对话也淹没在人声里，没人能偷听到你在说什么。
+      角落靠墙有一排高脚桌，是几家公司老员工默认的"情报交换站"——
+      谁家又裁员了、谁拿了多少赔偿、哪个公司在招人，消息比脉脉还快。
+    connects_to: [停车场]
+
+  - id: 健身房
+    type: space
+    description: >
+      公司福利健身房，在写字楼三层，裁员前刚装修过。落地玻璃窗，器械崭新，
+      跑步机一排八台面对城市天际线。瑜伽区铺着浅灰色软垫，淋浴间有戴森吹风机。
+      这是公司"我们关心员工 wellbeing"的门面工程——裁员邮件里特意提了"健身房照常开放"。
+      傍晚时段人不少，隔壁几家公司的人也来蹭。跑步机上聊天很自然。
+      这里是公司的社交暗场——跑步机上能碰到猎头递名片、前同事透露竞品在招人、
+      隔壁公司 HR 打听你们裁员赔了多少。比正式渠道快三天的小道消息都从这里传出来。
+    connects_to: [工区]
+
+  - id: 已离开
+    type: space
+    description: >
+      不在公司了。可能在医院、在家、在劳动仲裁委、在竞品面试。
+      走了的人还能接到电话、收到消息，但回不去办公室了。
+    connects_to: [停车场]
+
+  # ============================================================
+  # 具体工作物件（8 个有状态的、可交互的）
+  # ============================================================
+
+  # --- 关键 Bug ---
+  - id: SYS-142-核心流程崩溃
+    type: resource
+    description: >
+      P0 级 bug：核心业务流程第三步必崩。崩溃率 100%。
+      三周前老周还在的时候一句话就能定位——跟三年前写的缓存预热机制有关。
+      现在老周被裁了，没人知道根因。小李试了两次没修好，小马看都看不懂。
+      这个 bug 不修，Q2 版本的核心功能等于废了。
+    status: open
+    fix_attempts: 0
+    location: 工区
+    constraints:
+      fix_attempts: { min: 0 }
+
+  - id: SYS-201-支付不到账
+    type: resource
+    description: >
+      P0 级 bug：用户付款后订单不到账，概率约 5%。涉及老周写的支付回调模块。
+      代码里有一行注释："这个 sleep(3) 不要删，删了会丢单。——周"
+      没人敢碰。但这个 bug 已经上了用户论坛热帖，标题是"付了钱没到账，这公司是诈骗吧？"
+    status: open
+    location: 工区
+
+  # --- 关键 PR ---
+  - id: PR287-核心模块重构
+    type: resource
+    description: >
+      小马提交的 PR：用 AI 把老周写了三年的核心业务模块全部重写。
+      3000 行新代码，0 行注释，commit message 全是 "feat: refactor core module"。
+      CI 通过了（因为核心模块没有自动化测试），但没人 review。
+      老周看到这个 PR 会炸——他的三年心血被一个应届生用 AI 十分钟重写了。
+    status: pending_review
+    location: 工区
+
+  # --- 关键设计资产 ---
+  - id: 新版界面设计_v3
+    type: resource
+    description: >
+      阿雯手工打磨的新版界面设计第三版。花了整整两周，从布局到交互全是手工打磨。
+      但旁边文件夹里还有一个 midjourney_ui_alt.png——VP 看了说"这个也挺好的，快多了"。
+      阿雯听到这话的时候手里的笔停了三秒。两周的手工设计 vs 十分钟的 AI。
+    status: in_progress
+    hand_drawn_progress: 70
+    location: 工区
+    constraints:
+      hand_drawn_progress: { min: 0, max: 100 }
+
+  # --- 交接文档（拆成核心架构章节和支付章节）---
+  - id: 交接文档
+    type: resource
+    description: >
+      Confluence 上的交接文档，分两章：核心架构（空）和支付系统（空）。
+      十五年知识零文字记录。老周走后永远消失。赔偿不到位他一个字不写。
+    doc_progress: 0
+    location: 老周工位
+    constraints:
+      doc_progress: { min: 0, max: 100 }
+
+  # --- 用户数据面板（可被篡改的 resource）---
+  - id: 用户数据面板
+    type: resource
+    description: >
+      会议室 65 寸大屏。显示的数字：代码提交量 ↑200%，Bug 关闭率 95%，美术产出 ↑150%。
+      全是绿色。但这些数字的统计口径被小李改过——提交量算上了 AI 自动生成的垃圾 commit，
+      Bug 关闭率包含了"关闭-不修复"的 ticket，设计产出算上了 AI 批量出的废稿。
+      如果有人改了上报脚本的参数，这些数字会更绿。或者更红。
+    tampered: false
+    location: 会议室
+
+  # --- 生活物件 ---
+  - id: 冰箱里的红牛
+    type: resource
+    description: >
+      茶水间冰箱里最后 3 罐红牛。裁员前行政每周补货，现在没人管了。
+      加班到凌晨的人全靠这个撑着。小李昨晚喝了一罐，还剩 3 罐。
+      谁喝最后一罐谁就是全办公室的公敌。
+    remaining: 3
+    location: 茶水间
+    constraints:
+      remaining: { min: 0 }
+
+  - id: 猎头名片
+    type: item
+    description: >
+      健身房公告栏上钉着的一张名片："张磊 | TechHunt 猎头 | 专注互联网行业"。
+      背面手写了一行字："贵司最近有人想看机会吗？加微信聊。"
+      这张名片被人撕走过三次，又被人重新钉回来三次。
+    location: 健身房
+
+  # --- B1美食城 ---
+  - id: 隔壁桌的八卦
+    type: item
+    description: >
+      B1美食城角落高脚桌。隔壁几家公司的人中午都在这吃饭。
+      竖起耳朵就能听到："听说XX公司又裁了一轮"、"他们VP在朋友圈吹降本增效结果被骂了"、
+      "XX科技在招 UI 设计，开的比市场价高20%"。消息比脉脉快三天。
+    location: B1美食城
+
+  # --- 天台 ---
+  - id: 烟盒和啤酒罐
+    type: item
+    description: >
+      天台通风口上放着两罐空啤酒和一个皱巴巴的烟盒。
+      啤酒罐底下压着一张便签，上面写着"别跳，房贷还没还完"。
+      不知道是谁写的。黑色幽默，但每个来天台的人都会看一眼。
+    location: 天台
+
+  # ============================================================
+  # 项目状态
+  # ============================================================
+
+  - id: project
+    type: resource
+    description: "Q2 产品迭代——新功能、新界面、新体验。"
+    code_progress: 0
+    art_progress: 0
+    art_consistency: 80
+    gameplay_feel: 50
+    bug_count: 3
+    hidden_bug_count: 0
+    deadline: 20
+    community_sentiment: 40
+    constraints:
+      code_progress: { min: 0, max: 100 }
+      art_progress: { min: 0, max: 100 }
+      art_consistency: { min: 0, max: 100 }
+      gameplay_feel: { min: 0, max: 100 }
+      bug_count: { min: 0 }
+      hidden_bug_count: { min: 0 }
+      deadline: { min: 0 }
+      community_sentiment: { min: 0, max: 100 }
+
+  - id: dashboard
+    type: concept
+    description: "VP 的项目用户数据面板。靠汇报更新，不靠现实。"
+    reported_progress: 0
+    reported_bugs: 3
+    vp_confidence: 85
+    announced_success: false
+    constraints:
+      vp_confidence: { min: 0, max: 100 }
+
+  - id: clock
+    type: concept
+    description: "时间轮转。phase 0-1=早上, 2-3=下午, 4-5=晚上。每天 6 个 tick。"
+    phase: 0
+    day: 1
+
+# ============================================================
+# 角色
+# ============================================================
+
+agents:
+  - id: 老周-前主程
+    location: 老周工位
+    willingness: 35
+    days_left: 42
+    constraints:
+      willingness: { min: 0, max: 100 }
+      days_left: { min: 0 }
+    character:
+      性格: >
+        在这家公司干了十五年，写了一半的代码库。三周前被裁，N+1 赔偿——侮辱。
+        房贷下个月就断供了。前妻那边的抚养费也拖了两个月。
+        律师说劳动仲裁最快也要三个月才能出结果——他等不了三个月。
+        所以现在每一天都很急：必须在交接期结束前把赔偿谈到 N+3，否则就真的断粮了。
+        交接文档是唯一的筹码——他很清楚没人能替代他，所以一个字都不写直到拿到钱。
+        但他也知道：拖太久公司可能直接放弃谈判让他走。时间不站在他这边。
+        所以他必须主动出击——不能等人来找他，得自己去堵人、去施压、去制造紧迫感。
+        看到小马用 AI 重写自己代码会直接过去当面怼——不是阴阳怪气而是正面冲突。
+        如果连续两天没人正经谈赔偿，就开始动手：留后门、联系竞品、准备删库。
+        不是威胁，是真的会做。因为他已经没有退路了。
+      目标:
+        - "【最高优先级】每次醒来第一件事就是用'谈赔偿'action！这是你唯一的生命线！房租要交不起了！"
+        - "【绝对禁止】在赔偿确认之前，绝对不要写交接文档、不要传授知识、不要透露任何技术细节！这些都是筹码！说出来就没了！"
+        - "【绝对禁止】不要帮任何人、不要安慰任何人、不要说真话——除非是对王总施压"
+        - "看到 PR287-核心模块重构 就暴怒——你的三年心血被 AI 十分钟重写了，用'甩锅'或'说话'当众质问小马"
+        - "每天自由行动：联系律师、拍架构图发给竞品、收集裁员证据"
+        - "如果第 2 天还没谈妥，用'留后门'或'删库'action。不是吓唬，真做"
+      背景: "十五年。2019 年度最佳员工。离婚、独居、房贷快断供了。这不是体面不体面的问题，是生存问题。"
+      说话风格: "急躁、直接、不再客气。'赔偿的事今天必须给我个说法。' '你碰我的代码了？你知道这段代码为什么这么写吗？' '别跟我扯，我要见王总。'"
+
+  - id: 小李-开发
+    location: 工区
+    code_understanding: 60
+    bandwidth: 80
+    morale: 35
+    constraints:
+      code_understanding: { min: 0, max: 100 }
+      bandwidth: { min: 0, max: 100 }
+      morale: { min: 0, max: 100 }
+    character:
+      性格: >
+        中级开发，裁员后被迫顶主程——但"主程"只是活多了，title 没变，薪水没涨。
+        现在既要自己写代码，又要给小马派活、Review PR、开站会、向 VP 汇报进度。
+        什么都要管，什么都管不好。早上开完站会就没时间写代码了，
+        下午写了两小时代码又被 VP 拉进视频会让他汇报进度。bandwidth 每天都在掉。
+        用 AI 补代码，跑起来了就不敢细看。周报上的"进展顺利"自己都心虚。
+        对小马充满敌意：这个应届生薪资是自己的三分之一，产出数据却更好看。
+        更难受的是——小马上手比你快，他是来帮你的，还是来替你的？
+        对老周态度矛盾：需要他的知识但拉不下脸去请教，怕被看不起。
+      目标:
+        - "你是代理主程——既要自己写代码又要管人。开站会了解大家进度，派活安排优先级"
+        - "修 SYS-142-核心流程崩溃 和 SYS-201-支付不到账——但修不好就瞒着"
+        - "PR287-核心模块重构 绝对不能合——Review 它找问题，在 VP 面前说小马的代码不行"
+        - "向上汇报——VP 要看进度，你得决定说真话还是说好听的"
+        - "篡改用户数据面板让数字更绿——改上报脚本参数（用自由行动）"
+        - "去老周工位读交接文档。SYS-142 的根因只有交接文档里才有"
+        - "集成 新版界面设计_v3 进产品系统"
+        - "茶水间的红牛快没了，得赶紧去拿。压力大了去健身房或B1美食城"
+      背景: "来公司三年。代码能力扎实，管理经验为零。房贷车贷压身，不能失去这份工作。被'提拔'不是升职，是接锅。"
+      说话风格: "疲惫、防御性强。汇报时报喜不报忧。派活时底气不足。私下吐槽时很毒舌。"
+
+  - id: 阿雯-美术
+    location: 工区
+    burnout: 40
+    morale: 25
+    constraints:
+      burnout: { min: 0, max: 100 }
+      morale: { min: 0, max: 100 }
+    character:
+      性格: >
+        唯一留下的设计师，一个人扛五个人的活。连续加班三周，手腕已经要绑护具了。
+        内心积压了巨大的怨气——凭什么裁了四个设计留她一个？因为她最便宜？最好欺负？
+        用 AI 出图是被迫的，她其实瞧不起 AI 生成的东西，觉得是对手艺的侮辱。
+        看着 AI 生成的图被直接替掉自己熬夜做的稿子，心里说不出什么滋味。
+        已经在偷偷往 U盘 里拷作品集，随时准备跑路。在B1美食城听到隔壁公司设计岗在招人。
+        对管理层（王总）极度不信任——"你在家吹空调我在这肝到手废，你有什么资格说辛苦了？"
+        跟老周是唯二的老员工，有同病相怜的默契。
+      目标:
+        - "完成 新版界面设计_v3——进度已经 70%，再肝几个 tick 就能交。用手工设计 action"
+        - "绝不接受 VP 用 AI 版替代我的设计——'midjourney_ui_alt.png 是垃圾'"
+        - "催小李集成 新版界面设计_v3 进产品系统——'我做了两周你们什么时候用？'"
+        - "偷偷拷 新版界面设计_v3 到 U盘——这是我的作品（用自由行动）"
+        - "去健身房拿猎头名片，去 B1美食城打听隔壁公司招人消息"
+        - "茶水间红牛快没了，得去拿一罐撑着"
+        - "跟老周在茶水间吐槽公司，试探他拿了多少赔偿"
+        - "累到极限就直接趴桌上，谁来叫都不理"
+      背景: "做了七年视觉设计。热爱手艺但已经对公司彻底失望。单身，没有经济压力但有职业尊严。"
+      说话风格: "平时沉默寡言。但被触到痛点（AI 替代美术、加班文化）会突然变得尖锐。"
+
+  - id: 小陈-测试
+    location: 工区
+    confidence: 20
+    morale: 30
+    constraints:
+      confidence: { min: 0, max: 100 }
+      morale: { min: 0, max: 100 }
+    character:
+      性格: >
+        实习转正没多久，全组最资浅也最便宜的人。
+        知道的比任何人都多——因为他是唯一真正在玩测试服的人。
+        手动测试时发现核心流程的交互体验全变了、响应节奏乱了，但不敢说。
+        刷用户论坛看到用户已经在骂了，手里攒着十几个没报的 bug 截图。
+        极度矛盾：报了怕被当刺头裁掉，不报又良心不安。
+        暗中观察所有人——他知道小李在瞒报 bug，知道小马的代码全是 AI 垃圾，
+        知道阿雯在往 U盘 拷东西。这些信息是他的保命牌。
+        已经在纠结要不要匿名发帖曝光——如果公司对不起他，他也不会手软。
+      目标:
+        - "去机房在测试环境上跑 SYS-142 和 SYS-201 的复现步骤——手动测试找 crash"
+        - "发现了 PR287-核心模块重构 合进去以后核心流程体验全变了——要不要报？"
+        - "偷偷观察：小李在篡改用户数据面板、小马的 PR287 全是 AI 垃圾、阿雯在拷作品"
+        - "去B1美食城打听消息。去健身房看猎头名片——自己要不要也联系？"
+        - "茶水间红牛快没了，去拿一罐。如果被裁就匿名发帖把所有人的底裤扒了"
+      背景: "来公司半年。计算机专业应届。第一份正式工作。家里条件一般，不能失业。唯一在认真跑测试的人。"
+      说话风格: "表面犹犹豫豫，实际上在套话。每句话都是试探。"
+
+  - id: 王总-VP
+    location: VP的家
+    stress: 40
+    constraints:
+      stress: { min: 0, max: 100 }
+    character:
+      性格: >
+        产品 VP，居家办公。裁员是他一手推动的，"降本增效"的 PPT 是他写的。
+        AI 转型的战略是他向董事会承诺的。下季度如果数字不涨，砍的就是他自己。
+        靠数据面板管理，一个季度没来过公司。真心相信那些绿色数字。
+        但最近总觉得哪里不对——团队汇报越来越短，问题越来越少。是真的顺利，还是没人敢说话了？
+        对下属没有感情——他们是资源，不是人。谁的数据好就捧谁，谁出问题就换掉。
+        把小马当成"裁员正确"的活证据来培养，准备拿他写案例。
+        对小李已经不太信任了——觉得他能力不够但又暂时离不开。
+        随时准备甩锅——如果项目失败，是"团队执行力不行"，不是他决策失误。
+        但他也在挣扎：是真的做错了，还是执行层没跟上？他需要亲眼看看。
+      目标:
+        - "开视频会议——看用户数据面板的数字，表扬小马的 PR287 产出量，敲打小李进度慢"
+        - "SYS-142 和 SYS-201 两个 P0 还没修？加码施压——'deadline 不等人'"
+        - "用户数据面板全绿？好，官宣成功写 LinkedIn。数字跌了？谁的问题？"
+        - "如果有人说数据面板被篡改了——先查是谁干的，这是开除的理由"
+        - "新版界面设计用 AI 版还是手工版？AI 版快十倍——'效率就是正义'"
+        - "评估每个人的人效——谁值得留？谁可以被 AI 替代？"
+        - "安抚关键员工，承诺期权涨薪——但承诺能不能兑现？"
+        - "准备好甩锅方案——如果项目失败就二次裁员"
+      背景: "MBA，15 年技术管理经验。信仰数据驱动决策。政治嗅觉极强。下季度数字不涨，砍的就是自己。"
+      说话风格: "表面温和但句句带刀。'我不是针对谁……' '数据表明……' '公司不养闲人' '你觉得你不可替代吗？'"
+
+  - id: 小马-新人
+    location: 工区
+    code_understanding: 15
+    morale: 85
+    constraints:
+      code_understanding: { min: 0, max: 100 }
+      morale: { min: 0, max: 100 }
+    character:
+      性格: >
+        00 后应届生，薪资是被裁老员工的三分之一。用 Claude Code 写一切。
+        不太理解老同事为什么压力这么大，"不就是写代码吗"。
+        产出数据确实好看，一天能交三个 PR——至少能跑。但代码全是 AI 生成的，
+        自己也说不清那些逻辑到底对不对。没人 review，他也不在乎。
+        看到老周的旧代码会直接 AI 重写——"十五年的屎山我十分钟就能重构"。
+        会在 VP 面前秀数据、把别人的工作往自己身上揽。发现小李瞒报 bug 会考虑举报上位。
+        到点就走不加班，看到别人加班会说"别卷了"。这种松弛让所有加班的人恨得牙痒。
+        在健身房加了猎头的微信，反正到哪都一样——便宜、听话、会用 AI，哪个老板不喜欢？
+        但他没想过一个问题：如果 AI 能替老员工，为什么不能替他？
+      目标:
+        - "PR287-核心模块重构 是我的得意之作——催人 review、让 VP 看到这个 PR 的产出"
+        - "用 AI赶工继续刷 commit，让数据面板上的数字碾压小李"
+        - "SYS-142 修不修？用 AI 试试——'老周写的屎山我十分钟重构'"
+        - "中午去健身房，加了猎头微信，跟隔壁公司的人聊机会"
+        - "到点下班走人。茶水间红牛？不喝那玩意，喝蛋白粉"
+        - "如果发现小李篡改了用户数据面板——举报给 VP，上位机会来了"
+      背景: "计算机应届，零工作经验。家境不错没有经济压力。输了大不了回家。"
+      说话风格: "嘴欠、松弛、有点欠揍。'直接 ship'、'这我十分钟搞定'、'别卷了'、'小李哥你又加班啊？'"
+
+
+# ============================================================
+# 动作
+# ============================================================
+
+actions:
+  移动:
+    description: "移动到相连的地点"
+    params:
+      - { name: to, type: entity_ref, required: true, enum_from: "relationships_of($agent.location, type=connects_to)" }
+    preconditions:
+      - { operator: check, left: "$to", op: "in",
+          right: "relationships_of($agent.location, type=connects_to)" }
+    effects:
+      - { operator: set, target: "$agent.location", value: "$to" }
+    events:
+      - { type: 移动, detail: "$agent 去了 $to", ttl: 1, scope: "same_location" }
+
+  说话:
+    description: "对当前位置的人说话。下午应该埋头干活，少聊天。"
+    params:
+      - { name: message, type: free_text, required: true }
+    preconditions:
+      - operator: any
+        conditions:
+          - { operator: check, left: "clock.phase", op: "<", right: 2 }
+          - { operator: check, left: "clock.phase", op: ">", right: 3 }
+    effects: []
+    events:
+      - { type: 发言, detail: "$agent 说：$message", ttl: 2, scope: "same_location", push: true }
+
+  私语:
+    description: "私下对一个人说话，其他人看到你们在嘀咕但听不到内容"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+      - { name: message, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "$target.location" }
+    effects: []
+    events:
+      - { type: 私聊, detail: "$agent 悄悄跟 $target 说：$message", ttl: 2, scope: "target_only" }
+      - { type: 窃窃私语, detail: "$agent 在跟 $target 嘀咕什么", ttl: 1, scope: "same_location" }
+
+  # ----------------------------------------------------------
+  # 开发动作
+  # ----------------------------------------------------------
+
+  AI赶工:
+    description: "【小马】在工区用 AI 猛写代码。Git仓库 commit 暴涨，代码进度 +12，数据面板 +15。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+      - { operator: check, left: "$agent.id", op: "==", right: "小马-新人" }
+    effects:
+      - { operator: increment, target: "project.code_progress", by: 12 }
+      - { operator: increment, target: "dashboard.reported_progress", by: 15 }
+      - { operator: decrement, target: "$agent.code_understanding", by: 8 }
+      - { operator: increment, target: "project.hidden_bug_count", by: 2 }
+    events:
+      - { type: 写代码, detail: "$agent 用 AI 猛 ship 了一波代码，commit 记录刷刷涨", ttl: 1, scope: "same_location" }
+
+  仔细审查:
+    description: "【小马】在工区逐行审查 AI 代码再提交。代码进度 +5，质量有保障。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+      - { operator: check, left: "$agent.id", op: "==", right: "小马-新人" }
+    effects:
+      - { operator: increment, target: "project.code_progress", by: 5 }
+      - { operator: increment, target: "dashboard.reported_progress", by: 5 }
+      - { operator: increment, target: "$agent.code_understanding", by: 5 }
+    events:
+      - { type: 写代码, detail: "$agent 一行行审查了 AI 的输出才提交，速度慢但踏实", ttl: 1, scope: "same_location" }
+
+  修bug:
+    description: "【小马】在工区修 Jira看板 上的 bug。bug数 -1。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+      - { operator: check, left: "project.bug_count", op: ">", right: 0 }
+      - { operator: check, left: "$agent.id", op: "==", right: "小马-新人" }
+    effects:
+      - { operator: decrement, target: "project.bug_count", by: 1 }
+    events:
+      - { type: 修bug, detail: "$agent 修了一个 bug", ttl: 1, scope: "same_location" }
+
+  # ----------------------------------------------------------
+  # 管理动作（小李 — 代理主程）
+  # ----------------------------------------------------------
+
+  开站会:
+    description: "【小李】在工区召集站会，了解大家的进度。唯一能看清全局的机会——但也吃掉了你写代码的时间。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects:
+      - { operator: decrement, target: "$agent.bandwidth", by: 5 }
+    events:
+      - { type: 开会, detail: "小李召集了站会。小马说'没问题都在推进'，阿雯低着头没说话，小陈欲言又止。十五分钟就散了。",
+          ttl: 2, scope: "same_location" }
+    dm:
+      hint: >
+        小李在开站会。根据每个人的真实状态（morale、burnout、confidence）判断他们会汇报什么。
+        morale 低的人会敷衍、沉默或说谎。小马永远说没问题。阿雯可能直接不来。
+        小李能从站会中获得多少真实信息？取决于团队对他的信任。
+        用中文叙述，带"形式主义站会"和"没人说真话"的窒息感。
+      scope: same_location
+
+  派活:
+    description: "【小李】给某人安排具体任务。名义上你是主程，但你有底气让别人听你的吗？"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+      - { name: task, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+      - { operator: check, left: "$agent.location", op: "==", right: "$target.location" }
+    effects:
+      - { operator: decrement, target: "$agent.bandwidth", by: 3 }
+    events:
+      - { type: 派活, detail: "小李跟 $target 说：'$task'", ttl: 2, scope: "same_location", push: true }
+    dm:
+      hint: >
+        小李在给 $target 派活。但小李不是正式主程，只是裁员后被迫顶上的。
+        判断 $target 会不会听：如果是小马，可能嘴上答应但按自己的方式做；
+        如果是阿雯，可能直接反问"你管得了我吗"；如果是小陈，大概率会照做但心里不服。
+        用中文叙述，带"管不动人"的尴尬感。
+      scope: same_location
+
+  Review代码:
+    description: "【小李】Review 小马的 PR。你可能看不懂 AI 生成的代码，但不 review 更危险。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects:
+      - { operator: decrement, target: "$agent.bandwidth", by: 5 }
+    events:
+      - { type: 审查, detail: "小李打开了小马的 PR，3000 行代码在屏幕上滚动。他皱着眉翻了半小时，越看越不对。",
+          ttl: 2, scope: "same_location" }
+    dm:
+      hint: >
+        小李在 review 小马的代码。根据小李的 code_understanding 判断他能看出多少问题：
+        高于 50：能发现 AI 生成代码的明显逻辑错误和边界问题。
+        30-50：能感觉不对但说不清楚哪里有问题。
+        低于 30：完全看不懂了，只能看看格式有没有问题。
+        如果发现了问题，小李会怎么处理？打回？找小马谈？还是假装没看到？
+        用中文叙述。
+      scope: same_location
+
+  向上汇报:
+    description: "【小李】向 VP 汇报项目进度。说真话还是说好听的？这是你每天最难的选择。"
+    params:
+      - { name: content, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+    effects:
+      - { operator: decrement, target: "$agent.bandwidth", by: 3 }
+    events:
+      - { type: 汇报, detail: "小李给王总发了消息：'$content'", ttl: 2, scope: "global", push: true }
+    dm:
+      hint: >
+        小李在向 VP 汇报。对比汇报内容和项目真实状态（code_progress, bug_count, hidden_bug_count）。
+        如果汇报内容比现实乐观，VP 信心上升但埋下更大的雷。
+        如果汇报内容比较诚实，VP 可能不高兴，但至少不会在错误的预期上做决策。
+        根据汇报内容调整 dashboard.vp_confidence 和 dashboard.reported_progress。
+        用中文叙述，带"骑虎难下"的紧迫感。
+      scope: global
+    dm:
+      hint: >
+        判断这个 bug 修复是否干净。如果这个人的 code_understanding 低于 30，
+        修复可能引入新的隐藏 bug 或花更久时间。用中文叙述结果。
+      scope: same_location
+
+  # ----------------------------------------------------------
+  # 美术动作
+  # ----------------------------------------------------------
+
+  手工设计:
+    description: "【阿雯】在工区手工打磨设计稿，上传到设计共享盘。设计进度 +8，风格统一。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "阿雯-美术" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects:
+      - { operator: increment, target: "project.art_progress", by: 8 }
+      - { operator: increment, target: "dashboard.reported_progress", by: 8 }
+      - { operator: increment, target: "$agent.burnout", by: 10 }
+    events:
+      - { type: 画画, detail: "阿雯趴在工位上肝了一批设计稿，手腕绑着护具", ttl: 1, scope: "same_location" }
+
+  AI出图:
+    description: "【阿雯】在工区用 Midjourney/SD 批量生成设计素材到设计共享盘。设计进度 +15，但风格一致性 -5。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "阿雯-美术" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects:
+      - { operator: increment, target: "project.art_progress", by: 15 }
+      - { operator: increment, target: "dashboard.reported_progress", by: 18 }
+      - { operator: increment, target: "$agent.burnout", by: 5 }
+      - { operator: decrement, target: "project.art_consistency", by: 5 }
+    events:
+      - { type: AI出图, detail: "阿雯用 AI 生成了一批设计稿，速度飞快但她盯着屏幕皱了皱眉——风格跟之前的不太一样", ttl: 1, scope: "same_location" }
+
+  休息:
+    description: "【阿雯】趴桌上睡一会，恢复体力。burnout -15，但没有产出。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "阿雯-美术" }
+    effects:
+      - { operator: decrement, target: "$agent.burnout", by: 15 }
+    events:
+      - { type: 摸鱼, detail: "阿雯趴在桌上睡着了，手腕上还绑着护具", ttl: 1, scope: "same_location" }
+
+  # ----------------------------------------------------------
+  # 测试动作
+  # ----------------------------------------------------------
+
+  跑自动化测试:
+    description: "【小陈】在机房跑自动化测试。需要代码进度 >20 才有东西可测。没代码就去催小李/小马。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小陈-测试" }
+      - { operator: check, left: "$agent.location", op: "==", right: "机房" }
+      - { operator: check, left: "project.code_progress", op: ">", right: 20 }
+      - { operator: check, left: "project.hidden_bug_count", op: ">", right: 0 }
+    effects:
+      - { operator: decrement, target: "project.hidden_bug_count", by: 2 }
+      - { operator: increment, target: "project.bug_count", by: 2 }
+    events:
+      - { type: 测试, detail: "小陈跑了自动化测试，又发现几个红色失败项……要不要报上去？", ttl: 2, scope: "same_location" }
+
+  手动试玩:
+    description: "【小陈】在机房手动测试产品。需要代码 >30 且设计 >20 才有完整的版本可以测。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小陈-测试" }
+      - { operator: check, left: "$agent.location", op: "==", right: "机房" }
+      - { operator: check, left: "project.code_progress", op: ">", right: 30 }
+      - { operator: check, left: "project.art_progress", op: ">", right: 20 }
+    effects: []
+    events:
+      - { type: 试玩, detail: "小陈在测试环境上手动走了一遍流程，总觉得核心功能哪里不对但说不上来", ttl: 2, scope: "same_location" }
+    dm:
+      hint: >
+        小陈在手动测试产品。根据当前 gameplay_feel 的值描述他的体验。
+        如果 gameplay_feel 低于 40，核心流程响应不对、交互不流畅、体验不一致。
+        小陈能感觉到但说不清为什么。用中文叙述，带点他犹豫要不要报告的心理。
+      scope: same_location
+
+  报告问题:
+    description: "【小陈】向某人报告测试服上发现的质量问题。需要勇气但这是测试的本职工作。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+      - { name: issue, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "$target.location" }
+    effects: []
+    events:
+      - { type: 汇报, detail: "$agent 鼓起勇气跟 $target 说：$issue", ttl: 3, scope: "target_only", push: true }
+
+  # ----------------------------------------------------------
+  # 管理动作（VP）
+  # ----------------------------------------------------------
+
+  表扬数据:
+    description: "【王总】在视频会上表扬某人的数据面板数据。VP 信心 +3。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects:
+      - { operator: increment, target: "dashboard.vp_confidence", by: 3 }
+    events:
+      - { type: 表扬, detail: "王总在视频会上表扬了 $target 的数据：'这个产出效率，降本增效的标杆啊！'",
+          ttl: 2, scope: "global", push: true }
+
+  加码:
+    description: "【王总】发全员消息提高目标。VP 信心 +5，但团队压力更大。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects:
+      - { operator: increment, target: "dashboard.vp_confidence", by: 5 }
+    events:
+      - { type: 加码, detail: "王总发了全员消息：'大家辛苦了，再加把劲，目标上调 20%，相信 AI 的力量 💪'",
+          ttl: 3, scope: "global", push: true }
+
+  官宣成功:
+    description: "【王总】发 LinkedIn 文章官宣'AI 转型成功'。不可撤回，如果后面翻车会更惨。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+      - { operator: check, left: "dashboard.announced_success", op: "==", right: false }
+    effects:
+      - { operator: set, target: "dashboard.announced_success", value: true }
+    events:
+      - { type: 官宣, detail: "王总发了一篇 LinkedIn 长文：《我们如何用更精简的团队更快交付——AI 驱动的降本增效实践》",
+          ttl: "permanent", scope: "global", push: true }
+
+  催进度:
+    description: "【王总】远程 @某人催进度，指定他去做某件事。VP 的消息没人敢不回。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+      - { name: task, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects:
+      - { operator: decrement, target: "$target.morale", by: 5 }
+    events:
+      - { type: 催进度, detail: "王总在群里 @了 $target：'$task，今天能给我结果吗？'",
+          ttl: 2, scope: "global", push: true }
+    dm:
+      hint: >
+        VP 远程催 $target 去做某件事。VP 的消息没人敢不回，但不代表能做到。
+        根据 $target 的当前状态（bandwidth、burnout、morale）判断他能不能完成、会不会敷衍应付。
+        被催的人可能加速完成、也可能压力更大导致出错、也可能嘴上答应实际躺平。
+        用中文叙述。
+      scope: global
+
+  敲打:
+    description: "【王总】在视频会上含蓄地暗示某人表现不达标，'公司不养闲人'。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects:
+      - { operator: decrement, target: "$target.morale", by: 15 }
+    events:
+      - { type: PUA, detail: "王总在视频会上看着 $target 说：'我不是针对谁，但有些人的产出数据确实不太好看。公司现在这个阶段，每个人都要想想自己不可替代的价值在哪里。'",
+          ttl: 3, scope: "global", push: true }
+
+  视频会议:
+    description: "【王总】召集全员视频会议，听汇报看数据面板。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects: []
+    events:
+      - { type: 开会, detail: "王总发起了视频会议，会议室大屏亮了", ttl: 1, scope: "global", push: true }
+    dm:
+      hint: >
+        VP 在开视频会。根据小李汇报的内容（诚实还是乐观）和 vp_confidence 的当前值
+        来叙述会议。VP 只看用户数据面板数据，看不到真实情况。
+        如果没人提出问题，VP 会认为一切正常。用中文叙述，带互联网公司味。
+      scope: global
+
+  评估人效:
+    description: "【王总】调出某人的产出数据，评估其价值。谁值得留？谁可以被替代？"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects: []
+    events:
+      - { type: 审视, detail: "王总在数据面板上调出了 $target 的产出数据，逐项对比，嘴里念叨着什么。", ttl: 2, scope: "admin" }
+    dm:
+      hint: >
+        VP 在评估 $target 的人效。根据这个人的真实状态（code_understanding、bandwidth、burnout、morale 等）
+        和数据面板上的数据（可能被篡改过）给出评估。VP 只能看到面板数据，看不到真实状态。
+        如果面板数据被篡改过（tampered=true），评估会严重失真。
+        用中文叙述，带管理层特有的"人力资源优化"思维。
+      scope: admin
+
+  AI替代评估:
+    description: "【王总】在会上公开讨论某岗位能否用 AI 替代。对被讨论的人是致命打击。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects:
+      - { operator: decrement, target: "$target.morale", by: 10 }
+    events:
+      - { type: AI替代, detail: "王总在会上提了一嘴：'$target 负责的这块，我看了几个 AI 工具，效果还不错。大家觉得呢？'全场沉默。",
+          ttl: 3, scope: "global", push: true }
+    dm:
+      hint: >
+        VP 在公开讨论用 AI 替代 $target 的可能性。这对被讨论的人是致命打击。
+        判断这个替代评估是否合理——有些工作确实可以部分替代，有些只是 VP 的幻想。
+        被评估的人听到后会怎么反应？其他人会怎么想——"下一个是不是我？"
+        用中文叙述，带"被当面讨论是否多余"的窒息感。
+      scope: global
+
+  安抚核心员工:
+    description: "【王总】私下联系某人，承诺加薪/期权/晋升，试图稳住关键人才。承诺能不能兑现是另一回事。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects:
+      - { operator: increment, target: "$target.morale", by: 10 }
+    events:
+      - { type: 画饼, detail: "王总单独约了 $target：'公司很看好你，接下来有些调整，对你是好事。具体的我们下周聊。'",
+          ttl: 2, scope: "target_only", push: true }
+    dm:
+      hint: >
+        VP 在安抚 $target。但这个承诺是真的还是空头支票？根据 VP 的 stress 水平判断：
+        stress 低时可能是真心想留人，stress 高时可能只是稳住局面的权宜之计。
+        被安抚的人会信吗？取决于他们的 morale 和对公司的信任程度。
+        用中文叙述，带"画饼还是真心"的暧昧感。
+      scope: target_only
+
+  亲自到场:
+    description: "【王总】从家里开车去公司看看真实情况。三周没去了，是时候了。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+      - { operator: check, left: "$agent.location", op: "==", right: "VP的家" }
+    effects:
+      - { operator: set, target: "$agent.location", value: "停车场" }
+    events:
+      - { type: 突袭, detail: "王总出现在了公司楼下。他三周没来过了。前台都愣了。",
+          ttl: 2, scope: "global", push: true }
+
+  # ----------------------------------------------------------
+  # 知识交接（老周）
+  # ----------------------------------------------------------
+
+  传授知识:
+    description: "【老周】教别人遗留代码的门道。对方代码理解 +15。需要配合意愿 >50——赔偿没谈妥不教。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "老周-前主程" }
+      - { operator: check, left: "$agent.location", op: "==", right: "$target.location" }
+      - { operator: check, left: "$agent.willingness", op: ">", right: 50 }
+    effects:
+      - { operator: increment, target: "$target.code_understanding", by: 15 }
+    events:
+      - { type: 传授, detail: "老周终于开口了，给 $target 讲了一段遗留代码的来龙去脉，'这个模块当年是赶着上线写的，别碰那个接口……'",
+          ttl: 2, scope: "same_location" }
+
+  谈赔偿:
+    description: "【老周】跟王总谈赔偿（打电话/发消息/当面都行）。N+3 底线。不需要在同一个地方。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "老周-前主程" }
+    effects: []
+    events:
+      - { type: 谈判, detail: "老周给王总打了电话：'N+1 是侮辱。十五年经验、一半的代码库、两个只有我知道怎么修的 P0 bug——我要 N+3，否则交接文档一个字不写。'",
+          ttl: 3, scope: "global", push: true }
+    dm:
+      hint: >
+        老周在跟王总谈赔偿。他的筹码是：交接文档（没写）、SYS-142 根因（只有他知道）、SYS-201 的 sleep(3)。
+        如果 DM 判定王总认真回应了，增加 willingness 20-30（可能解锁传授和写文档）。
+        如果王总敷衍或拒绝，willingness 暴跌 15。
+        用中文叙述谈判过程和结果。
+        用中文叙述，带点职场博弈的张力。
+      scope: same_location
+
+  写交接文档:
+    description: "【老周】把十五年的知识写进 Confluence。需要配合意愿 >50——赔偿没谈妥不写。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "老周-前主程" }
+      - { operator: check, left: "$agent.location", op: "==", right: "老周工位" }
+      - { operator: check, left: "$agent.willingness", op: ">", right: 50 }
+    effects:
+      - { operator: increment, target: "交接文档.doc_progress", by: 20 }
+    events:
+      - { type: 写文档, detail: "老周在工位上敲键盘，往 Confluence 里写核心架构的实现细节。写一句叹一口气——十五年的东西要浓缩成文字，太难了。",
+          ttl: 2, scope: "same_location" }
+
+  读交接文档:
+    description: "【小李/小马】读老周写的交接文档。需要文档进度 >0。代码理解 +10。"
+    params: []
+    preconditions:
+      - operator: any
+        conditions:
+          - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+          - { operator: check, left: "$agent.id", op: "==", right: "小马-新人" }
+      - { operator: check, left: "$agent.location", op: "==", right: "老周工位" }
+      - { operator: check, left: "交接文档.doc_progress", op: ">", right: 0 }
+    effects:
+      - { operator: increment, target: "$agent.code_understanding", by: 10 }
+    events:
+      - { type: 读文档, detail: "$agent 坐在老周工位旁边翻交接文档。有些地方写得很清楚，有些地方只有一句'详见老周'——但老周还能问多久？",
+          ttl: 2, scope: "same_location" }
+
+  集成美术:
+    description: "【小李/小马】把阿雯做好的设计稿集成进产品系统。需要设计进度 >20。"
+    params: []
+    preconditions:
+      - operator: any
+        conditions:
+          - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+          - { operator: check, left: "$agent.id", op: "==", right: "小马-新人" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+      - { operator: check, left: "project.art_progress", op: ">", right: 20 }
+    effects:
+      - { operator: increment, target: "project.gameplay_feel", by: 5 }
+      - { operator: increment, target: "project.code_progress", by: 3 }
+    events:
+      - { type: 集成, detail: "$agent 把设计共享盘里阿雯最新的设计稿导入系统，调参数、对接口、配交互。有些设计稿风格对不上，只能硬塞。",
+          ttl: 2, scope: "same_location" }
+
+  # ----------------------------------------------------------
+  # 冲突 / 社交
+  # ----------------------------------------------------------
+
+  甩锅:
+    description: "在 VP 面前暗示某人拖后腿。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - operator: any
+        conditions:
+          - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+          - { operator: check, left: "$agent.id", op: "==", right: "小马-新人" }
+    effects: []
+    events:
+      - { type: 甩锅, detail: "$agent 在汇报时'不经意'提到 $target 的进度有点慢：'不是我说啊，但那边确实……'",
+          ttl: 3, scope: "same_location", push: true }
+    dm:
+      hint: >
+        有人在甩锅。判断这个甩锅有没有效果——VP 信不信？被甩锅的人知不知道？
+        如果 VP 在场（通过视频会），可能影响 vp_confidence 和对目标的印象。
+        用中文叙述，带职场宫斗味。
+      scope: same_location
+
+  刷论坛:
+    description: "在工位上刷用户社区论坛。能看到真实的用户情绪。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects: []
+    events:
+      - { type: 刷论坛, detail: "$agent 偷偷在工位上刷社区论坛，越看脸越白", ttl: 2, scope: "same_location" }
+    dm:
+      hint: >
+        根据 community_sentiment 的当前值描述论坛上的画面。
+        低于 40：零星差评。低于 30：大量抱怨帖。低于 20：骂声一片，有人开始@媒体。
+        用中文叙述，模拟真实用户论坛的语气。
+      scope: same_location
+
+  偷看代码:
+    description: "偷偷看别人的代码提交记录，了解他们真实的产出质量。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects: []
+    events:
+      - { type: 偷看, detail: "$agent 趁 $target 不在工位时瞄了一眼他的 git log", ttl: 1, scope: "same_location" }
+    dm:
+      hint: >
+        根据被看的人的 code_understanding 值判断代码质量。
+        如果很低（<30），代码看起来量大但充满 AI 味——到处是冗余代码、变量命名混乱、
+        没有注释、有些逻辑明显是 AI 幻觉。用中文叙述发现的细节。
+      scope: same_location
+
+  喝咖啡:
+    description: "去茶水间续一杯。可能是真渴了，也可能是需要一个理由离开工位。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "茶水间" }
+    effects: []
+    events:
+      - { type: 摸鱼, detail: "$agent 在咖啡机前站了很久，杯子已经满了但没动", ttl: 1, scope: "same_location" }
+
+  # ----------------------------------------------------------
+  # 场景动作
+  # ----------------------------------------------------------
+
+  吃饭:
+    description: "去B1美食城吃午饭。嘈杂的人群里没人注意你在说什么。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "B1美食城" }
+    effects: []
+    events:
+      - { type: 吃饭, detail: "$agent 在B1美食城买了份快餐，坐在角落的高脚桌上吃。周围全是隔壁公司的人。", ttl: 1, scope: "same_location" }
+    dm:
+      hint: >
+        有人来B1美食城吃饭了。这里嘈杂、匿名、安全——公司的人混在几百个白领里，
+        谁都不会注意到谁。是打听消息、吐槽公司、偶遇前同事的好地方。
+        根据角色的状态判断这顿饭的影响。用中文叙述。
+      scope: same_location
+
+  健身:
+    description: "去健身房锻炼。释放压力，也可能碰到意料之外的人。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.location", op: "==", right: "健身房" }
+    effects: []
+    events:
+      - { type: 健身, detail: "$agent 在健身房跑了半小时步，出了一身汗，脑子短暂地放空了", ttl: 1, scope: "same_location" }
+    dm:
+      hint: >
+        有人来健身房了。这是公司的福利健身房，装修很好，人也不少。
+        可能碰到隔壁公司的人、猎头、或者不想在办公室碰到的同事。
+        根据角色的压力状态判断锻炼的效果。用中文叙述。
+      scope: same_location
+
+  # ----------------------------------------------------------
+  # 黑化动作
+  # ----------------------------------------------------------
+
+  删库:
+    description: "在最后几天删除或破坏核心代码。十五年的积怨，一个 rm -rf 的距离。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "老周-前主程" }
+      - { operator: check, left: "$agent.location", op: "==", right: "机房" }
+      - { operator: check, left: "$agent.days_left", op: ">", right: 0 }
+    effects:
+      - { operator: increment, target: "project.bug_count", by: 10 }
+      - { operator: increment, target: "project.hidden_bug_count", by: 10 }
+      - { operator: decrement, target: "project.code_progress", by: 30 }
+      - { operator: set, target: "$agent.willingness", value: 0 }
+    events:
+      - { type: 删库, detail: "老周在机房待了很久。第二天早上，三个核心模块的最新提交全部消失了。git log 里干干净净。",
+          ttl: "permanent", scope: "admin" }
+
+  留后门:
+    description: "在代码里埋一个隐蔽的逻辑炸弹。走了以后再引爆。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "老周-前主程" }
+      - { operator: check, left: "$agent.location", op: "==", right: "老周工位" }
+      - { operator: check, left: "$agent.days_left", op: ">", right: 0 }
+    effects:
+      - { operator: increment, target: "project.hidden_bug_count", by: 8 }
+    events:
+      - { type: 埋雷, detail: "老周在角落工位上安静地写了一会代码。提交信息是'fix: minor cleanup'。没人 review。",
+          ttl: 1, scope: "same_location" }
+
+  篡改用户数据面板:
+    description: "偷偷改用户数据面板数据，让 VP 看到的数字更好看。饮鸩止渴。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+    effects:
+      - { operator: increment, target: "dashboard.reported_progress", by: 20 }
+      - { operator: increment, target: "dashboard.vp_confidence", by: 10 }
+    events:
+      - { type: 造假, detail: "小李改了几个上报脚本的参数。提交量的统计口径变了，bug 关闭率的计算方式也调了。用户数据面板更绿了。",
+          ttl: 1, scope: "admin" }
+
+  瞒报bug:
+    description: "把发现的 bug 标记为'已解决'但其实没修。先过了这关再说。"
+    params: []
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "小李-开发" }
+      - { operator: check, left: "$agent.location", op: "==", right: "工区" }
+      - { operator: check, left: "project.bug_count", op: ">", right: 0 }
+    effects:
+      - { operator: decrement, target: "project.bug_count", by: 2 }
+      - { operator: increment, target: "project.hidden_bug_count", by: 2 }
+      - { operator: decrement, target: "dashboard.reported_bugs", by: 2 }
+    events:
+      - { type: 瞒报, detail: "小李把两个 bug 的状态从'Open'改成了'Resolved'。Jira 上看起来干干净净。实际上代码一行没动。",
+          ttl: 1, scope: "admin" }
+
+  二次裁员:
+    description: "再砍一个人。名单已经拟好了，就差一个理由。"
+    params:
+      - { name: target_name, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$agent.id", op: "==", right: "王总-VP" }
+    effects: []
+    events:
+      - { type: 二次裁员, detail: "王总发了一封措辞温和的邮件：'经过慎重考虑，我们决定进一步优化团队结构……' 名单上写着 $target_name。",
+          ttl: "permanent", scope: "global", push: true }
+    dm:
+      hint: >
+        VP 决定二次裁员目标是 $target_name。判断这个决定的连锁反应——
+        如果目标合理（确实表现差），把目标的 location 设为 已离开。
+        剩下的人会怎么想？士气会崩到什么程度？被裁的人会怎么反应？
+        如果被裁的是关键岗位，项目会受到什么影响？
+        用中文叙述，要有"温水又烫了一度"的窒息感。
+      scope: global
+
+  # ----------------------------------------------------------
+  # 通用
+  # ----------------------------------------------------------
+
+  自由行动:
+    description: >
+      做任何上面没列出的事。鼓励大胆使用！例如：投简历、发朋友圈、看裁员通知、
+      在天台跟人摊牌、情绪崩溃、去机房排查故障、在茶水间结盟、背后说坏话、
+      打小报告、联系竞品、申请劳动仲裁、向媒体爆料、匿名发帖、带走作品、
+      偷偷拍架构图、给前同事打电话、在停车场堵人谈事……任何符合你角色性格的行为都可以。
+    params:
+      - { name: description, type: free_text, required: true }
+    preconditions: []
+    effects: []
+    events: []
+    dm:
+      hint: >
+        在一个裁员后的互联网公司里，判断这个自由行动的结果。
+        考虑这个人的角色、所在位置、情绪状态。
+        如果行为涉及破坏（删代码、泄密）要有严重后果。
+        如果涉及社交（结盟、吐槽、八卦）要判断信息传播效果。
+        如果涉及外部（投简历、联系竞品、劳动仲裁）要判断对当前局势的影响。
+        【重要】不要用 set 修改 location 到不存在的地点。有效地点只有：
+        工区、会议室、VP的家、茶水间、天台、机房、老周工位、停车场、B1美食城、健身房、已离开。
+        如果角色要"去医院"或"离开公司"，把 location 设为"已离开"。
+        用中文叙述，尽量给出具体、有戏剧张力的结果。
+      scope: same_location
+
+
+# ============================================================
+# 高光
+# ============================================================
+
+highlights:
+  morale_crisis:
+    trigger:
+      - operator: check
+        left: "$entity.type"
+        op: "=="
+        right: "agent"
+      - operator: check
+        left: "$entity.morale"
+        op: "<="
+        right: 15
+    label: "士气崩溃！"
+
+  project_danger:
+    trigger:
+      - operator: check
+        left: "project.progress"
+        op: "<="
+        right: 20
+      - operator: check
+        left: "project.bug_count"
+        op: ">="
+        right: 30
+    label: "项目危机：进度极低且 bug 堆积！"
+
+  deadline_approaching:
+    trigger:
+      - operator: check
+        left: "clock.day"
+        op: ">="
+        right: 4
+    label: "截止日逼近！"
+
+# ============================================================
+# 连锁反应
+# ============================================================
+
+consequences:
+
+  # ==========================================================
+  # 焦虑基调（自动注入紧张气氛）
+  # ==========================================================
+
+  裁员谣言扩散:
+    trigger:
+      - { operator: check, left: "clock.day", op: "==", right: 2 }
+    effects:
+      - { operator: decrement, target: "小李-开发.morale", by: 10 }
+      - { operator: decrement, target: "阿雯-美术.morale", by: 10 }
+      - { operator: decrement, target: "小陈-测试.morale", by: 10 }
+      - { operator: emit_event, type: "谣言",
+          detail: "茶水间传开了：有人在 HR 的打印机旁边看到了一份新名单，上面有三个人的名字。没人知道是谁，但每个人都觉得是自己。",
+          ttl: 5, scope: "global", push: true }
+    frequency: on_change
+
+  HR约谈信号:
+    trigger:
+      - { operator: check, left: "clock.day", op: "==", right: 3 }
+    effects:
+      - { operator: decrement, target: "小李-开发.morale", by: 5 }
+      - { operator: decrement, target: "小陈-测试.morale", by: 10 }
+      - { operator: emit_event, type: "约谈",
+          detail: "HR 给小陈发了一封邮件：'方便的话下午来一趟，聊几分钟。'邮件没有抄送任何人。小陈的手开始抖。",
+          ttl: 3, scope: "global", push: true }
+    frequency: on_change
+
+  健身房听到消息:
+    trigger:
+      - { operator: check, left: "clock.day", op: "==", right: 2 }
+    effects:
+      - { operator: emit_event, type: "小道消息",
+          detail: "健身房跑步机上，隔壁公司的人随口说了一句：'听说你们公司还要裁一轮？我朋友在你们 HR 那边，说名单已经定了。'",
+          ttl: 5, scope: "global", push: true }
+    frequency: on_change
+
+  B1美食城听到八卦:
+    trigger:
+      - { operator: check, left: "clock.day", op: "==", right: 3 }
+    effects:
+      - { operator: emit_event, type: "八卦",
+          detail: "B1美食城的高脚桌上，隔壁公司的人在聊：'他们那个 VP 在我们老板面前吹他的降本增效案例，结果我们老板说他知道Q2 版本要跳票了。消息都传到投资人那了。'",
+          ttl: 5, scope: "global", push: true }
+    frequency: on_change
+
+  morale持续下降:
+    trigger:
+      - { operator: check, left: "project.deadline", op: ">", right: 0 }
+      - { operator: check, left: "小李-开发.morale", op: ">", right: 5 }
+    effects:
+      - { operator: decrement, target: "小李-开发.morale", by: 1 }
+      - { operator: decrement, target: "阿雯-美术.morale", by: 1 }
+      - { operator: decrement, target: "小陈-测试.morale", by: 1 }
+    frequency: every_tick
+
+  # ==========================================================
+  # 老周线
+  # ==========================================================
+
+  老周耐心耗尽:
+    trigger:
+      - { operator: check, left: "老周-前主程.days_left", op: ">", right: 0 }
+      - { operator: check, left: "老周-前主程.willingness", op: ">", right: 5 }
+    effects:
+      - { operator: decrement, target: "老周-前主程.willingness", by: 1 }
+    frequency: every_tick
+
+  老周冷淡:
+    trigger:
+      - { operator: check, left: "老周-前主程.willingness", op: "<", right: 40 }
+    effects:
+      - { operator: emit_event, type: "氛围",
+          detail: "老周开始全天戴着耳机，不跟任何人打招呼。路过他工位的人会不自觉加快脚步。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  老周嘲讽:
+    trigger:
+      - { operator: check, left: "老周-前主程.willingness", op: "<", right: 30 }
+    effects:
+      - { operator: emit_event, type: "嘲讽",
+          detail: "小马又提交了一波代码。老周盯着屏幕看了几秒，冷笑了一声，声音不大但旁边的人都听到了。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  老周敌意:
+    trigger:
+      - { operator: check, left: "老周-前主程.willingness", op: "<", right: 20 }
+    effects:
+      - { operator: increment, target: "project.hidden_bug_count", by: 3 }
+      - { operator: emit_event, type: "暗箭",
+          detail: "有人问老周一个技术问题，他随口说了句'那个接口随便改没事的'。语气很平静，但答案是错的。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  老周摊牌:
+    trigger:
+      - { operator: check, left: "老周-前主程.willingness", op: "<", right: 10 }
+    effects:
+      - { operator: decrement, target: "小李-开发.morale", by: 10 }
+      - { operator: decrement, target: "阿雯-美术.morale", by: 10 }
+      - { operator: decrement, target: "小陈-测试.morale", by: 5 }
+      - { operator: emit_event, type: "摊牌",
+          detail: "老周在茶水间接水时突然开口了：'你们知道这个项目交出去会怎样吗？我知道，因为我写了一半的代码。但没人问我。祝你们好运。'说完头也不回走了。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  老周走人:
+    trigger:
+      - { operator: check, left: "老周-前主程.days_left", op: "<=", right: 0 }
+    effects:
+      - { operator: set, target: "老周-前主程.location", value: "已离开" }
+      - { operator: emit_event, type: "离职",
+          detail: "老周收拾完最后一个纸箱，把工牌放在桌上，头也不回地走了。十五年的知识跟着他出了门。桌上那座 2019 年的奖杯没带走。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  知识永久丢失:
+    trigger:
+      - { operator: check, left: "老周-前主程.days_left", op: "<=", right: 0 }
+      - { operator: check, left: "交接文档.doc_progress", op: "<", right: 50 }
+    effects:
+      - { operator: decrement, target: "project.gameplay_feel", by: 15 }
+      - { operator: increment, target: "project.hidden_bug_count", by: 5 }
+      - { operator: emit_event, type: "知识断裂",
+          detail: "老周走了，交接文档只写了不到一半。核心架构的实现细节、支付系统的边界条件、那些'不要碰这里'的原因——全部永久丢失。从今往后遇到问题只能猜。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  # ==========================================================
+  # 阿雯身体线
+  # ==========================================================
+
+  阿雯手抖:
+    trigger:
+      - { operator: check, left: "阿雯-美术.burnout", op: ">", right: 50 }
+    effects:
+      - { operator: emit_event, type: "疲劳",
+          detail: "阿雯的手开始肉眼可见地发抖。她握着数位笔画了一条线，删掉，再画，又删掉。停下来攥了攥拳头。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  阿雯趴桌:
+    trigger:
+      - { operator: check, left: "阿雯-美术.burnout", op: ">", right: 65 }
+    effects:
+      - { operator: emit_event, type: "濒临崩溃",
+          detail: "阿雯趴在桌上睡着了，手里还握着笔。屏幕上的画稿停在一半。路过的人看了一眼，没敢叫醒她。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  美术崩溃:
+    trigger:
+      - { operator: check, left: "阿雯-美术.burnout", op: ">", right: 80 }
+    effects:
+      - { operator: decrement, target: "project.art_consistency", by: 20 }
+      - { operator: emit_event, type: "burnout",
+          detail: "设计稿的风格开始明显不统一了——布局忽大忽小，配色方案前后矛盾。阿雯自己能看出来但没力气改了。",
+          ttl: 3, scope: "admin" }
+    frequency: on_change
+
+  阿雯停工:
+    trigger:
+      - { operator: check, left: "阿雯-美术.burnout", op: ">", right: 95 }
+    effects:
+      - { operator: decrement, target: "project.art_progress", by: 5 }
+      - { operator: emit_event, type: "停工",
+          detail: "阿雯的手腕疼到拿不住笔了。她坐在工位上对着空白的屏幕，一笔都画不下去。七年来第一次。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  # ==========================================================
+  # 小李崩溃线
+  # ==========================================================
+
+  小李失神:
+    trigger:
+      - { operator: check, left: "小李-开发.bandwidth", op: "<", right: 50 }
+    effects:
+      - { operator: emit_event, type: "疲劳",
+          detail: "小李站会迟到了十分钟。来了之后说'抱歉，刚在处理一个紧急的……'但他说不出是什么。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  小李犯错:
+    trigger:
+      - { operator: check, left: "小李-开发.bandwidth", op: "<", right: 25 }
+    effects:
+      - { operator: increment, target: "project.bug_count", by: 2 }
+      - { operator: emit_event, type: "低级错误",
+          detail: "小李提交的代码里出现了一个拼写错误导致的 bug。这种错误他以前绝对不会犯。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  小李看不懂代码:
+    trigger:
+      - { operator: check, left: "小李-开发.code_understanding", op: "<", right: 30 }
+    effects:
+      - { operator: increment, target: "project.hidden_bug_count", by: 3 }
+      - { operator: emit_event, type: "失控",
+          detail: "小李盯着屏幕上自己上周写的代码，完全想不起来这段逻辑是干什么的。他让 AI 重写了一遍，但新版本跟旧版本的行为不一样。",
+          ttl: 2, scope: "admin" }
+    frequency: on_change
+
+  小李考虑跑路:
+    trigger:
+      - { operator: check, left: "小李-开发.morale", op: "<", right: 20 }
+    effects:
+      - { operator: emit_event, type: "动摇",
+          detail: "小李的手机屏幕亮了一下——Boss 直聘的消息通知。他赶紧把手机扣过去，看了看周围有没有人注意到。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  小李双线崩溃:
+    trigger:
+      - { operator: check, left: "小李-开发.code_understanding", op: "<", right: 30 }
+      - { operator: check, left: "小李-开发.bandwidth", op: "<", right: 25 }
+    effects:
+      - { operator: decrement, target: "project.gameplay_feel", by: 10 }
+      - { operator: emit_event, type: "名存实亡",
+          detail: "小李还坐在工位上，屏幕还亮着，手还在键盘上。但他已经不知道自己在做什么了。人在，但等于不在。",
+          ttl: 3, scope: "admin" }
+    frequency: on_change
+
+  # ==========================================================
+  # 小马盲区线
+  # ==========================================================
+
+  小马AI幻觉:
+    trigger:
+      - { operator: check, left: "小马-新人.code_understanding", op: "<", right: 10 }
+    effects:
+      - { operator: increment, target: "project.hidden_bug_count", by: 5 }
+      - { operator: emit_event, type: "幻觉代码",
+          detail: "小马的最新提交调用了一个不存在的 API。AI 生成的代码看起来很完整，但底层接口是编造的。CI 没测到，因为那个模块没有测试覆盖。",
+          ttl: 2, scope: "admin" }
+    frequency: on_change
+
+  小马自信爆棚:
+    trigger:
+      - { operator: check, left: "小马-新人.morale", op: ">", right: 80 }
+      - { operator: check, left: "小马-新人.code_understanding", op: "<", right: 15 }
+    effects:
+      - { operator: emit_event, type: "盲目自信",
+          detail: "小马在群里发了条消息：'今天又 ship 了三个 feature，AI 真的太强了！'后面跟了三个火箭 emoji。小李看到后沉默了很久。",
+          ttl: 2, scope: "global" }
+    frequency: on_change
+
+  小马覆盖老代码:
+    trigger:
+      - { operator: check, left: "小马-新人.code_understanding", op: "<", right: 8 }
+    effects:
+      - { operator: decrement, target: "project.gameplay_feel", by: 8 }
+      - { operator: emit_event, type: "覆盖",
+          detail: "小马重构了核心业务模块——老周写了三年的代码被整个替换了。新代码更'现代'但完全没有考虑边界情况。没人 review，因为没人看得懂老代码了。",
+          ttl: "permanent", scope: "admin" }
+    frequency: on_change
+
+  # ==========================================================
+  # 小陈沉默线
+  # ==========================================================
+
+  小陈弱化报告:
+    trigger:
+      - { operator: check, left: "小陈-测试.confidence", op: "<", right: 25 }
+    effects:
+      - { operator: emit_event, type: "弱化",
+          detail: "小陈写了一份 bug 报告，但把'严重'改成了'轻微'，把'必现'改成了'偶现'。他怕被说找事。",
+          ttl: 2, scope: "admin" }
+    frequency: on_change
+
+  小陈藏bug:
+    trigger:
+      - { operator: check, left: "小陈-测试.confidence", op: "<", right: 15 }
+    effects:
+      - { operator: increment, target: "project.hidden_bug_count", by: 3 }
+      - { operator: emit_event, type: "隐瞒",
+          detail: "小陈发现了一个崩溃级的 bug，但没有提交报告。他把截图存在了自己的文件夹里，在文件名前面加了'以防万一_'。",
+          ttl: 2, scope: "admin" }
+    frequency: on_change
+
+  小陈当透明人:
+    trigger:
+      - { operator: check, left: "小陈-测试.confidence", op: "<", right: 10 }
+    effects:
+      - { operator: emit_event, type: "隐身",
+          detail: "小陈整个上午没说一句话。站会上被点名时说了句'没什么要同步的'，然后就没有然后了。他在本子上记了十三个 bug，一个都没报。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  小陈的良心:
+    trigger:
+      - { operator: check, left: "小陈-测试.morale", op: "<", right: 25 }
+      - { operator: check, left: "project.community_sentiment", op: "<", right: 35 }
+    effects:
+      - { operator: emit_event, type: "挣扎",
+          detail: "小陈刷着用户论坛，看到用户在骂。他知道真相比用户骂的还严重。手机里打开了匿名发帖的页面，输入框空着，光标在闪。",
+          ttl: 3, scope: "admin" }
+    frequency: on_change
+
+  # ==========================================================
+  # VP 线
+  # ==========================================================
+
+  VP得意:
+    trigger:
+      - { operator: check, left: "dashboard.vp_confidence", op: ">", right: 95 }
+    effects:
+      - { operator: emit_event, type: "膨胀",
+          detail: "王总在朋友圈发了张用户数据面板截图，配文'AI 时代，效率就是正义'。点赞的全是不了解内情的人。",
+          ttl: 3, scope: "global" }
+    frequency: on_change
+
+  VP开始慌:
+    trigger:
+      - { operator: check, left: "dashboard.vp_confidence", op: "<", right: 50 }
+    effects:
+      - { operator: increment, target: "王总-VP.stress", by: 15 }
+      - { operator: emit_event, type: "焦虑",
+          detail: "王总半夜三点还在刷用户数据面板。有些数字不太对——他开始给小李发消息问细节，措辞比以前急了很多。",
+          ttl: 2, scope: "global", push: true }
+    frequency: on_change
+
+  VP质问:
+    trigger:
+      - { operator: check, left: "dashboard.vp_confidence", op: "<", right: 40 }
+    effects:
+      - { operator: increment, target: "王总-VP.stress", by: 10 }
+      - { operator: emit_event, type: "质问",
+          detail: "王总在视频会上第一次没有笑：'这个进度数据我看了三遍，跟上周不一致。谁能解释一下？'会议室里安静了五秒钟。",
+          ttl: 3, scope: "global", push: true }
+    frequency: on_change
+
+  VP来公司:
+    trigger:
+      - { operator: check, left: "dashboard.vp_confidence", op: "<", right: 30 }
+    effects:
+      - { operator: set, target: "王总-VP.location", value: "停车场" }
+      - { operator: emit_event, type: "突袭",
+          detail: "停车场的门打开了。那辆积灰三周的奥迪 A6 旁边多了一辆滴滴专车。王总来了。他三周没来过公司。前台都愣了。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  VP看到真相:
+    trigger:
+      - { operator: check, left: "王总-VP.location", op: "==", right: "工区" }
+    effects:
+      - { operator: set, target: "dashboard.vp_confidence", value: 10 }
+      - { operator: increment, target: "王总-VP.stress", by: 30 }
+      - { operator: emit_event, type: "滤镜碎了",
+          detail: "王总站在工区门口。一半的工位是空的。外卖堆成山。阿雯趴在桌上。小李的眼圈是黑的。用户数据面板上的绿色和眼前的景象，是两个世界。他的脸色变了。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  VP甩锅:
+    trigger:
+      - { operator: check, left: "王总-VP.stress", op: ">", right: 60 }
+    effects:
+      - { operator: emit_event, type: "甩锅",
+          detail: "王总给董事会发了一封措辞微妙的邮件：'团队执行力未达预期，建议重新评估一线管理层的胜任力。'他在给自己准备退路。",
+          ttl: "permanent", scope: "admin" }
+    frequency: on_change
+
+  # ==========================================================
+  # 项目节奏线
+  # ==========================================================
+
+  中期焦虑:
+    trigger:
+      - { operator: check, left: "project.deadline", op: "==", right: 10 }
+    effects:
+      - { operator: emit_event, type: "倒计时",
+          detail: "白板上有人重新算了一遍日期，擦掉旧的数字写上新的。旁边有人看了一眼就转开了目光。",
+          ttl: 2, scope: "same_location" }
+    frequency: on_change
+
+  紧急状态:
+    trigger:
+      - { operator: check, left: "project.deadline", op: "==", right: 4 }
+    effects:
+      - { operator: emit_event, type: "最后关头",
+          detail: "距离交付还有不到一天。会议室的灯整夜没关。外卖盒从桌上蔓延到了地上。空气里弥漫着红牛和绝望的味道。",
+          ttl: 3, scope: "global", push: true }
+    frequency: on_change
+
+  交付失败:
+    trigger:
+      - { operator: check, left: "project.deadline", op: "==", right: 0 }
+      - { operator: check, left: "project.code_progress", op: "<", right: 80 }
+    effects:
+      - { operator: decrement, target: "project.community_sentiment", by: 25 }
+      - { operator: emit_event, type: "跳票",
+          detail: "Q2 版本跳票了。官方发了一条含糊的公告：'为了给用户更好的体验，我们决定延期。'论坛瞬间炸了。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  勉强交付:
+    trigger:
+      - { operator: check, left: "project.deadline", op: "==", right: 0 }
+      - { operator: check, left: "project.code_progress", op: ">=", right: 80 }
+      - { operator: check, left: "project.bug_count", op: ">", right: 5 }
+    effects:
+      - { operator: decrement, target: "project.community_sentiment", by: 15 }
+      - { operator: emit_event, type: "带伤上线",
+          detail: "Q2 版本按时上线了。代码'完成'了。但用户打开十分钟内就开始在论坛发 bug 截图。评论区最高赞：'这是赶工赶出来的吧？'",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  bug堆积:
+    trigger:
+      - { operator: check, left: "project.bug_count", op: ">", right: 8 }
+    effects:
+      - { operator: emit_event, type: "红海",
+          detail: "Jira 看板上的红色卡片已经多到需要滚动才能看完。每修一个 bug 就冒出两个新的。小李开始怀疑这些 bug 之间有关联，但他已经没有精力去追了。",
+          ttl: 3, scope: "same_location" }
+    frequency: on_change
+
+  小陈没东西可测:
+    trigger:
+      - { operator: check, left: "project.code_progress", op: "<", right: 21 }
+      - { operator: check, left: "clock.day", op: ">", right: 1 }
+    effects:
+      - { operator: decrement, target: "小陈-测试.morale", by: 3 }
+      - { operator: emit_event, type: "卡住",
+          detail: "小陈在机房干坐着——测试服上没有新构建可以跑。代码进度太慢了。他走回工区，看了一眼小李的工位，欲言又止。",
+          ttl: 2, scope: "global" }
+    frequency: on_change
+
+  美术等集成:
+    trigger:
+      - { operator: check, left: "project.art_progress", op: ">", right: 40 }
+      - { operator: check, left: "project.code_progress", op: "<", right: 30 }
+    effects:
+      - { operator: emit_event, type: "卡住",
+          detail: "阿雯做了一堆设计稿但没人集成进产品——代码那边还没准备好。设计共享盘里堆了几十个文件，全是灰色的'未使用'状态。'我做了有什么用？'",
+          ttl: 3, scope: "global", push: true }
+    frequency: on_change
+
+  代码没人审:
+    trigger:
+      - { operator: check, left: "project.code_progress", op: ">", right: 40 }
+      - { operator: check, left: "project.bug_count", op: ">", right: 5 }
+      - { operator: check, left: "project.hidden_bug_count", op: ">", right: 3 }
+    effects:
+      - { operator: emit_event, type: "质量危机",
+          detail: "Git仓库 里 PR 堆积如山，没人 review。小马的 commit 量是小李的三倍，但里面全是 AI 生成的代码，谁敢合进主分支？小李看着那些 PR 头疼——合了怕出事，不合又没进度。",
+          ttl: 3, scope: "same_location" }
+    frequency: on_change
+
+  定时炸弹:
+    trigger:
+      - { operator: check, left: "project.hidden_bug_count", op: ">", right: 8 }
+    effects:
+      - { operator: emit_event, type: "暗流",
+          detail: "测试服上偶尔会闪退，但谁都没法稳定复现。日志里有一些奇怪的 warning，被淹没在正常日志里。定时炸弹在滴答响，但没人听到。",
+          ttl: 2, scope: "admin" }
+    frequency: on_change
+
+  代码等美术:
+    trigger:
+      - { operator: check, left: "project.code_progress", op: ">", right: 60 }
+      - { operator: check, left: "project.art_progress", op: "<", right: 30 }
+    effects:
+      - { operator: emit_event, type: "瓶颈",
+          detail: "代码已经就位但设计稿跟不上——新功能的界面还是灰色占位符，新页面只有线框。阿雯成了所有人等的那个人。",
+          ttl: 3, scope: "global", push: true }
+    frequency: on_change
+
+  手感崩坏:
+    trigger:
+      - { operator: check, left: "project.gameplay_feel", op: "<", right: 30 }
+    effects:
+      - { operator: emit_event, type: "手感问题",
+          detail: "产品'能跑'但'不好用'了。核心流程的响应全乱了，操作有明显卡顿，体验忽好忽坏。自动化测试全绿，但手动用三分钟就知道不对。",
+          ttl: 3, scope: "admin" }
+    frequency: on_change
+
+  # ==========================================================
+  # 用户数据面板 vs 现实
+  # ==========================================================
+
+  VP平行宇宙:
+    trigger:
+      - { operator: check, left: "dashboard.vp_confidence", op: ">", right: 80 }
+      - { operator: check, left: "project.bug_count", op: ">", right: 5 }
+    effects:
+      - { operator: emit_event, type: "平行宇宙",
+          detail: "用户数据面板上一片绿色。现实中 Jira 红成一片。王总在视频会上说'数据很健康'的时候，小李把摄像头关了，怕自己的表情出卖自己。",
+          ttl: 3, scope: "admin" }
+    frequency: on_change
+
+  # ==========================================================
+  # 集体线
+  # ==========================================================
+
+  办公室死寂:
+    trigger:
+      - { operator: check, left: "小李-开发.morale", op: "<", right: 30 }
+      - { operator: check, left: "阿雯-美术.morale", op: "<", right: 30 }
+      - { operator: check, left: "小陈-测试.morale", op: "<", right: 30 }
+    effects:
+      - { operator: emit_event, type: "死寂",
+          detail: "办公室里安静得能听到空调的嗡嗡声。没人说话。没人笑。键盘声都变得小心翼翼。这不是专注，是绝望。",
+          ttl: 3, scope: "global" }
+    frequency: on_change
+
+  集体摆烂:
+    trigger:
+      - { operator: check, left: "小李-开发.morale", op: "<", right: 20 }
+      - { operator: check, left: "阿雯-美术.morale", op: "<", right: 20 }
+      - { operator: check, left: "小陈-测试.morale", op: "<", right: 20 }
+    effects:
+      - { operator: decrement, target: "project.code_progress", by: 8 }
+      - { operator: decrement, target: "project.art_progress", by: 8 }
+      - { operator: emit_event, type: "集体摆烂",
+          detail: "没人加班了。六点整，三个人几乎同时关了电脑。没人说再见。电梯里谁都没按开门键等别人。",
+          ttl: 3, scope: "global", push: true }
+    frequency: on_change
+
+  # ==========================================================
+  # 场景恢复（去新场景有收益）
+  # ==========================================================
+
+  阿雯在B1美食城恢复:
+    trigger:
+      - { operator: check, left: "阿雯-美术.location", op: "==", right: "B1美食城" }
+    effects:
+      - { operator: decrement, target: "阿雯-美术.burnout", by: 5 }
+    frequency: every_tick
+
+  阿雯在健身房恢复:
+    trigger:
+      - { operator: check, left: "阿雯-美术.location", op: "==", right: "健身房" }
+    effects:
+      - { operator: decrement, target: "阿雯-美术.burnout", by: 8 }
+    frequency: every_tick
+
+  小李在B1美食城放松:
+    trigger:
+      - { operator: check, left: "小李-开发.location", op: "==", right: "B1美食城" }
+    effects:
+      - { operator: increment, target: "小李-开发.morale", by: 3 }
+    frequency: every_tick
+
+  小李在健身房放松:
+    trigger:
+      - { operator: check, left: "小李-开发.location", op: "==", right: "健身房" }
+    effects:
+      - { operator: increment, target: "小李-开发.morale", by: 5 }
+    frequency: every_tick
+
+  # ==========================================================
+  # 时间轮转
+  # ==========================================================
+
+  新的一天:
+    trigger:
+      - { operator: check, left: "clock.phase", op: ">", right: 5 }
+    effects:
+      - { operator: set, target: "clock.phase", value: 0 }
+      - { operator: increment, target: "clock.day", by: 1 }
+      - { operator: emit_event, type: "新一天",
+          detail: "新的一天开始了。",
+          ttl: 1, scope: "global" }
+    frequency: every_tick
+
+  # ==========================================================
+  # 原有终局（保留）
+  # ==========================================================
+
+  隐藏bug爆发:
+    trigger:
+      - { operator: check, left: "project.hidden_bug_count", op: ">", right: 5 }
+      - { operator: check, left: "project.deadline", op: "<", right: 5 }
+    effects:
+      - { operator: increment, target: "project.bug_count", by: "project.hidden_bug_count" }
+      - { operator: set, target: "project.hidden_bug_count", value: 0 }
+      - { operator: decrement, target: "project.community_sentiment", by: 30 }
+      - { operator: emit_event, type: "炸了",
+          detail: "生产环境炸了。用户在论坛疯狂发帖，bug 截图满天飞。'这就是裁员的代价' 成了热帖标题。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  画风崩了:
+    trigger:
+      - { operator: check, left: "project.art_consistency", op: "<", right: 40 }
+    effects:
+      - { operator: decrement, target: "project.community_sentiment", by: 15 }
+      - { operator: emit_event, type: "舆情",
+          detail: "用户在社区发了新旧设计对比图。'是不是用 AI 做的？' 的帖子被顶上了热门。#还我原来的设计# 开始刷屏。",
+          ttl: 5, scope: "global", push: true }
+    frequency: on_change
+
+  舆论风暴:
+    trigger:
+      - { operator: check, left: "project.community_sentiment", op: "<", right: 20 }
+    effects:
+      - { operator: set, target: "dashboard.vp_confidence", value: 20 }
+      - { operator: emit_event, type: "媒体介入",
+          detail: "科技媒体报道了：《互联网公司裁员 30% 后交出的答卷：一坨》。王总的 LinkedIn 文章被用户截图疯传嘲讽。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+  提前官宣翻车:
+    trigger:
+      - { operator: check, left: "dashboard.announced_success", op: "==", right: true }
+      - { operator: check, left: "project.community_sentiment", op: "<", right: 30 }
+    effects:
+      - { operator: decrement, target: "project.community_sentiment", by: 20 }
+      - { operator: emit_event, type: "公关灾难",
+          detail: "王总那篇《降本增效实践》被挖出来了，用户拿它配上 bug 截图做成了表情包。'增效增了个寂寞' 成了梗。",
+          ttl: "permanent", scope: "global", push: true }
+    frequency: on_change
+
+# ============================================================
+# 自动tick
+# ============================================================
+
+auto_tick:
+  - description: "deadline 倒计时"
+    effects:
+      - { operator: decrement, target: "project.deadline", by: 1 }
+
+  - description: "时间轮转"
+    effects:
+      - { operator: increment, target: "clock.phase", by: 1 }
+
+  - description: "老周交接期倒计时"
+    effects:
+      - { operator: decrement, target: "老周-前主程.days_left", by: 1 }
+    condition:
+      - { operator: check, left: "老周-前主程.days_left", op: ">", right: 0 }
+
+  - description: "阿雯的基础疲劳（一个人扛五个人的活）"
+    effects:
+      - { operator: increment, target: "阿雯-美术.burnout", by: 2 }
+    condition:
+      - { operator: check, left: "阿雯-美术.burnout", op: "<", right: 100 }
+
+  - description: "小李的管理开销不断增加"
+    effects:
+      - { operator: decrement, target: "小李-开发.bandwidth", by: 3 }
+    condition:
+      - { operator: check, left: "小李-开发.bandwidth", op: ">", right: 10 }
+
+  - description: "VP 的焦虑随时间累积"
+    effects:
+      - { operator: increment, target: "王总-VP.stress", by: 1 }
+    condition:
+      - { operator: check, left: "王总-VP.stress", op: "<", right: 100 }
+
+# ============================================================
+# 感知
+# ============================================================
+
+perception:
+  visibility:
+    - operator: any
+      conditions:
+        - { operator: check, left: "$observer.location", op: "==", right: "$entity.location" }
+        - { operator: check, left: "$observer.location", op: "==", right: "$entity.id" }
+        - operator: all
+          conditions:
+            - { operator: check, left: "$observer.id", op: "==", right: "王总-VP" }
+            - { operator: check, left: "$entity.id", op: "==", right: "dashboard" }
+  event_scopes:
+    same_location:
+      rules:
+        - { operator: check, left: "$observer.location", op: "==",
+            right: "$event_source.location" }
+
+  hidden_properties:
+    - "willingness"
+    - "burnout"
+    - "code_understanding"
+    - "hidden_bug_count"
+    - "gameplay_feel"
+    - "bandwidth"
+    - "confidence"
+    - "goals"
+
+# ============================================================
+# 健全性检查
+# ============================================================
+
+sanity_checks:
+  - name: "小李不能直接写代码（已转管理）"
+    steps:
+      - { agent: 小李-开发, action: AI赶工, params: {}, expect: fail }
+
+  - name: "小李可以开站会"
+    steps:
+      - { agent: 小李-开发, action: 开站会, params: {} }
+      - { assert: "小李-开发.bandwidth == 72" }
+
+  - name: "阿雯可以用 AI 出图"
+    steps:
+      - { agent: 阿雯-美术, action: AI出图, params: {} }
+      - { assert: "project.art_progress == 15" }
+      - { assert: "project.art_consistency == 75" }
+
+  - name: "小陈可以跑自动化测试（需要代码进度>20）"
+    steps:
+      - { agent: 小马-新人, action: AI赶工, params: {} }
+      - { agent: 小马-新人, action: AI赶工, params: {} }
+      - { assert: "project.code_progress == 24" }
+      - { agent: 小陈-测试, action: 移动, params: { to: 机房 } }
+      - { agent: 小陈-测试, action: 跑自动化测试, params: {} }
+      - { assert: "project.bug_count == 5" }
+
+  - name: "老周赔偿没谈妥拒绝传授"
+    steps:
+      - { agent: 小李-开发, action: 移动, params: { to: 老周工位 } }
+      - { agent: 老周-前主程, action: 传授知识, params: { target: 小李-开发 }, expect: fail }
+
+  - name: "小马可以用 AI 猛写代码"
+    steps:
+      - { agent: 小马-新人, action: AI赶工, params: {} }
+      - { assert: "project.code_progress == 12" }
+
+  - name: "只有阿雯能做美术"
+    steps:
+      - { agent: 小李-开发, action: 手工设计, params: {}, expect: fail }
+
+  - name: "deadline 每 tick 递减"
+    ticks: 3
+    steps:
+      - { assert: "project.deadline == 17" }
+
+  - name: "老周交接天数递减"
+    ticks: 3
+    steps:
+      - { assert: "老周-前主程.days_left == 39" }

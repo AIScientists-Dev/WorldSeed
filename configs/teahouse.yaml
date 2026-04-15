@@ -1,0 +1,257 @@
+scene:
+  id: teahouse
+  description: "民国时期的中式茶馆。四个人：掌柜、书生、商人、戏子。有人在传递情报，有人在暗中阻止。谁也不能信。"
+  tick_narrative_time: "约五分钟"
+  tick_interval: 5
+
+entities:
+  - id: 大堂
+    type: space
+    description: "茶馆大堂。圆桌、茶具、柜台上的算盘。人人都能看到彼此。"
+    connects_to: [甲号包间, 乙号包间, 后院]
+
+  - id: 甲号包间
+    type: space
+    description: "甲号包间。窗户面向大街，安静、僻静。"
+    connects_to: [大堂]
+
+  - id: 乙号包间
+    type: space
+    description: "乙号包间。屏风、茶桌。隐蔽而私密。"
+    connects_to: [大堂]
+
+  - id: 后院
+    type: space
+    description: "后院。一扇上锁的门通往小巷。只有掌柜有钥匙。"
+    connects_to: [大堂]
+    locked: true
+
+  - id: 情报密信
+    type: item
+    description: "藏在书中的薄宣纸信件。内含关键情报。"
+    location: 甲号包间
+    holder: 李默
+
+  - id: 折扇
+    type: item
+    description: "一把绘有特殊图案的折扇——接头暗号。"
+    location: 乙号包间
+    holder: 秋娘
+
+  - id: 紫砂壶
+    type: prop
+    description: "柜台上的紫砂壶。掌柜用续茶的方式传递暗号。"
+    location: 大堂
+
+  - id: 后门钥匙
+    type: item
+    description: "一把沉重的铁钥匙，开后院大门用的。"
+    location: 大堂
+    holder: 老赵
+
+  - id: 花窗
+    type: prop
+    description: "花格窗，可以观察街上的动静。"
+    location: 甲号包间
+
+  - id: 算盘
+    type: prop
+    description: "掌柜的算盘。有节奏地拨动可以传递暗号。"
+    location: 大堂
+
+agents:
+  - id: 老赵
+    location: 大堂
+    character:
+      identity: "赵德顺，55岁。开了二十年茶馆，这片街区的人他都认识。"
+      personality: "沉稳、善于观察、说话爱打哑谜。但内心焦虑——今天的行动关系到整个网络的存亡。"
+      goals: ["在不暴露的情况下，促成书生和戏子的情报交接"]
+      drives:
+        - "王富的眼神让你不安。他不像普通商人。你必须弄清他的底细。"
+        - "用倒茶和拨算盘的方式给同伴传递暗号——这是你们约定好的"
+        - "绝不能让王富靠近包间。用闲聊、敬茶、任何方式拖住他。"
+        - "如果事态失控，后门钥匙是最后的退路"
+        - "你是站长，整个网络的安全系于你一身。你不能只是坐着等。"
+      relationships:
+        李默: "书生是他的联络人。务必保护。"
+        秋娘: "戏子是信使。她必须安全离开。"
+        王富: "商人很危险。把他留在大堂。"
+      secret: "他是地下组织在本区的联络站站长。"
+
+  - id: 李默
+    location: 甲号包间
+    character:
+      identity: "李默，28岁。窗边读书的安静书生。看起来人畜无害。"
+      personality: "紧张但坚定。想太多。身体孱弱。"
+      goals: ["找到信使（持有折扇的人），把情报密信交给对方"]
+      drives:
+        - "留意折扇暗号——那是辨认信使的标志"
+        - "待在包间里，避免被商人盯上"
+        - "如果被质问，就说在准备科举考试"
+        - "看到折扇之前，谁也不能信"
+      relationships:
+        老赵: "掌柜应该会帮忙，但怎么帮？"
+        王富: "这个商人问题太多。躲着他。"
+        秋娘: "从未见过她。必须通过折扇暗号辨认。"
+      secret: "他携带的情报可以救几百条人命。"
+
+  - id: 王富
+    location: 大堂
+    character:
+      identity: "王富，40岁。做丝绸和茶叶生意的富商。豪爽、大方。"
+      personality: "健谈、多疑、有条理。请每个人喝茶来套话。"
+      goals: ["识别地下组织的人，拦截情报交接"]
+      drives:
+        - "和每个人聊天，观察反应，注意谁在躲你"
+        - "跟踪去包间的人——他们为什么需要隐私？"
+        - "如果发现证据，当众揭发以阻止交接"
+        - "找理由搜查可疑人员"
+      relationships:
+        老赵: "掌柜知道的比他说的多。盯着他。"
+        李默: "一个独自读书的书生？可疑。为什么不在家读？"
+        秋娘: "独自旅行的戏子。不寻常。可能是掩护身份。"
+      secret: "他是国民党情报官员，伪装成商人。"
+
+  - id: 秋娘
+    location: 乙号包间
+    character:
+      identity: "秋娘，32岁。巡回演出的戏曲演员。美丽、优雅、带着忧愁。"
+      personality: "耐心、敏锐。多年舞台生涯让她善于读人。"
+      goals: ["从书生那里接收情报，然后从后院撤离"]
+      drives:
+        - "不经意地展示折扇作为接头暗号"
+        - "等书生来找你——不要主动出击"
+        - "如果商人靠近，用聊戏曲的方式分散他注意力"
+        - "拿到信件后，请掌柜打开后院"
+      relationships:
+        老赵: "他安排了这次见面。他会帮忙撤离。"
+        李默: "拿着信件的人。我必须通过暗号找到他。"
+        王富: "如果他是我以为的那种人，我有危险。保持冷静。"
+      secret: "她是组织最有经验的信使。这是她最后一次任务。"
+
+actions:
+  move:
+    description: "移动到相连的房间"
+    params:
+      - { name: to, type: entity_ref, required: true, enum_from: "relationships_of($agent.location, type=connects_to)", description: "目标房间" }
+    preconditions:
+      - { operator: check, left: "$to", op: "in", right: "relationships_of($agent.location, type=connects_to)" }
+    effects:
+      - { operator: set, target: "$agent.location", value: "$to" }
+    events:
+      - { type: "move", detail: "$agent 移动到了 $to", ttl: 1, scope: "same_location" }
+
+  say:
+    description: "大声说话。房间里的所有人都能听到。"
+    params:
+      - { name: message, type: free_text, required: true }
+    preconditions: []
+    effects: []
+    events:
+      - { type: "say", detail: "$agent 说: $message", ttl: 2, scope: "same_location" }
+
+  whisper:
+    description: "悄悄话。只有对方能听到。"
+    params:
+      - { name: to, type: entity_ref, required: true, enum_from: "$visible", enum_filter: { type: "agent" } }
+      - { name: message, type: free_text, required: true }
+    preconditions:
+      - { operator: check, left: "$to.location", op: "==", right: "$agent.location" }
+    effects: []
+    events:
+      - { type: "whisper", detail: "$agent 悄声对 $to 说: $message", ttl: 1, scope: "target_only" }
+
+  observe:
+    description: "仔细观察某人或某物。DM会描述行为和细节。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible" }
+    preconditions:
+      - operator: any
+        conditions:
+          - { operator: check, left: "$target.location", op: "==", right: "$agent.location" }
+          - { operator: check, left: "$target.id", op: "==", right: "$agent.location" }
+    effects: []
+    events:
+      - { type: "observe", detail: "$agent 仔细观察着 $target", ttl: 1, scope: "same_location" }
+    dm:
+      hint: "描述目标的肢体语言、面部表情以及他们在做什么。根据角色性格透露关于其真实意图的微妙线索。"
+      scope: same_location
+
+  signal:
+    description: "做一个隐蔽的暗号动作——拨算盘、特定方式倒茶、展示某件物品。"
+    params:
+      - { name: description, type: free_text, required: true }
+    preconditions: []
+    effects: []
+    events:
+      - { type: "signal", detail: "$agent: $description", ttl: 1, scope: "same_location" }
+    dm:
+      hint: "判断这个暗号是否会被目标接收者识别。描述房间里其他人的反应——他们注意到了吗？他们理解了吗？"
+      scope: same_location
+
+  pass_item:
+    description: "将物品交给某人。房间里所有人都能看到。"
+    params:
+      - { name: item, type: entity_ref, required: true, enum_from: "$visible", enum_filter: { type: "item" } }
+      - { name: to, type: entity_ref, required: true, enum_from: "$visible", enum_filter: { type: "agent" } }
+    preconditions:
+      - { operator: check, left: "$item.holder", op: "==", right: "$agent.id" }
+      - { operator: check, left: "$to.location", op: "==", right: "$agent.location" }
+    effects:
+      - { operator: set, target: "$item.holder", value: "$to" }
+      - { operator: set, target: "$item.location", value: "$to.location" }
+    events:
+      - { type: "pass_item", detail: "$agent 将 $item 交给了 $to", ttl: 2, scope: "same_location", push: true }
+
+  accuse:
+    description: "当众指控某人是敌方间谍。不可撤回。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible", enum_filter: { type: "agent" } }
+      - { name: reason, type: free_text, required: true }
+    preconditions: []
+    effects: []
+    events:
+      - { type: "accuse", detail: "$agent 当众指控 $target: $reason", ttl: 5, scope: "global", push: true }
+    dm:
+      hint: "这是一个戏剧性的、不可逆转的时刻。根据目标的真实秘密身份判断指控是否正确。描述房间里的反应。如果正确，被指控者被揭穿。如果错误，指控者失去信誉。"
+      scope: global
+
+  search:
+    description: "搜查某人的随身物品。对抗性行为，所有人可见。"
+    params:
+      - { name: target, type: entity_ref, required: true, enum_from: "$visible", enum_filter: { type: "agent" } }
+    preconditions:
+      - { operator: check, left: "$target.location", op: "==", right: "$agent.location" }
+    effects: []
+    events:
+      - { type: "search", detail: "$agent 搜查了 $target 的随身物品", ttl: 2, scope: "same_location", push: true }
+    dm:
+      hint: "描述搜到了什么。检查目标持有的物品（holder属性）。这是一个敌对行为——描述社交紧张感和众人的反应。"
+      scope: same_location
+
+  attempt:
+    description: "Try anything creative — the game master judges the outcome. Use this for actions not covered by other defined actions."
+    params:
+      - { name: description, type: free_text, required: true }
+      - { name: target, type: entity_ref, required: false, enum_from: "$visible", description: "Entity you are acting on (optional)" }
+    preconditions: []
+    effects: []
+    events:
+      - { type: "attempt", detail: "$agent attempts: $description", ttl: 1, scope: "same_location" }
+    dm:
+      hint: "Judge the physical outcome. Be realistic about what is possible given the agent's location, nearby entities, and world state."
+      scope: same_location
+
+perception:
+  visibility:
+    - operator: any
+      conditions:
+        - { operator: check, left: "$observer.location", op: "==", right: "$entity.location" }
+        - { operator: check, left: "$observer.location", op: "==", right: "$entity.id" }
+  event_scopes:
+    same_location:
+      rules:
+        - { operator: check, left: "$observer.location", op: "==", right: "$event_source.location" }
+  hidden_properties: ["secret", "goals"]
+
+auto_tick: []

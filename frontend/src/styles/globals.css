@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════════
+ * WorldSeed — Design Tokens
+ *
+ * Single source of truth for all colors, fonts, spacing, radii.
+ * Two consumers read from this file:
+ *   1. shadcn/ui components — via @theme inline (--color-*, --font-*)
+ *   2. Component CSS files  — via :root (--border, --ghost, etc.)
+ * Same Tufte palette, two naming conventions.
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* ── Fonts ── loaded via <link> in index.html for faster first paint */
+
+/* ── Tailwind + shadcn ── */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─────────────────────────────────────────────────────────────
+ * SECTION 1: shadcn tokens (Tailwind utilities read these)
+ *
+ * Usage: className="bg-primary text-muted-foreground"
+ * ───────────────────────────────────────────────────────────── */
+
+@theme inline {
+  /* Colors — Tufte palette */
+  --color-background: #FFFFFF;
+  --color-foreground: #111827;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #111827;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #111827;
+  --color-primary: #1C1917;
+  --color-primary-foreground: #FAFAF9;
+  --color-secondary: #F5F5F4;
+  --color-secondary-foreground: #44403C;
+  --color-muted: #F5F5F4;
+  --color-muted-foreground: #78716C;
+  --color-accent: #F5F5F4;
+  --color-accent-foreground: #1C1917;
+  --color-destructive: #991B1B;
+  --color-destructive-foreground: #FAFAF9;
+  --color-border: #D6D3D1;
+  --color-input: #D6D3D1;
+  --color-ring: #44403C;
+
+  /* Sidebar */
+  --color-sidebar: #FAFAF9;
+  --color-sidebar-foreground: #1C1917;
+  --color-sidebar-primary: #1C1917;
+  --color-sidebar-primary-foreground: #FAFAF9;
+  --color-sidebar-accent: #F5F5F4;
+  --color-sidebar-accent-foreground: #1C1917;
+  --color-sidebar-border: #D6D3D1;
+  --color-sidebar-ring: #44403C;
+
+  /* WorldSeed semantic colors (muted, data-only) */
+  --color-sage: #57534E;
+  --color-sage-dim: rgba(87, 83, 78, 0.06);
+  --color-rose: #991B1B;
+  --color-rose-dim: rgba(153, 27, 27, 0.05);
+  --color-ws-amber: #44403C;
+  --color-ws-amber-dim: rgba(68, 64, 60, 0.06);
+  --color-ws-amber-glow: rgba(68, 64, 60, 0.12);
+  --color-ghost: #78716C;
+  --color-bright: #1C1917;
+  --color-ws-slate: #44403C;
+
+  /* Surfaces */
+  --color-surface: #F5F5F4;
+  --color-raised: #E7E5E4;
+  --color-void: #FAFAF9;
+
+  /* Charts (warm grayscale, color only for data) */
+  --color-chart-1: #1C1917;
+  --color-chart-2: #44403C;
+  --color-chart-3: #78716C;
+  --color-chart-4: #A8A29E;
+  --color-chart-5: #D6D3D1;
+
+  /* Typography */
+  --font-sans: 'IBM Plex Sans Variable', 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', ui-monospace, monospace;
+  --font-heading: var(--font-sans);
+
+  /* Radii */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * SECTION 2: App tokens (component CSS files read these)
+ *
+ * Usage in layout.css etc: border: 1px solid var(--border);
+ * Same Tufte values, short names for hand-written CSS.
+ * ───────────────────────────────────────────────────────────── */
+
+:root {
+  --radius: 0.625rem;
+
+  /* Fonts (used by layout.css, components.css, overlays) */
+  --font-display: 'Bricolage Grotesque Variable', sans-serif;
+  --font-data: 'IBM Plex Mono', 'SF Mono', monospace;
+  --font-narrative: 'Source Serif 4 Variable', 'Source Serif 4', 'Noto Serif SC', Georgia, serif;
+
+  /* Colors (used by layout.css, components.css, setup.css, etc.) */
+  --bg-void: #FAFAF9;
+  --bg-panel: #FFFFFF;
+  --bg-surface: #F5F5F4;
+  --bg-raised: #E7E5E4;
+  --bg-hover: #DBEAFE;
+  --border: #D1D5DB;
+  --border-hi: #9CA3AF;
+  --amber: #1D4ED8;              /* accent blue (named "amber" in legacy Tufte theme) */
+  --amber-dim: rgba(29, 78, 216, 0.06);
+  --amber-glow: rgba(29, 78, 216, 0.15);
+  --sage: #0F766E;
+  --sage-dim: rgba(15, 118, 110, 0.06);
+  --rose: #B91C1C;
+  --rose-dim: rgba(185, 28, 28, 0.05);
+  --highlight: #D97706;
+  --highlight-dim: rgba(217, 119, 6, 0.07);
+  --slate: #4B5563;
+  --ghost: #6B7280;
+  --bright: #111827;
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * SECTION 3: Base element styles
+ * ───────────────────────────────────────────────────────────── */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+

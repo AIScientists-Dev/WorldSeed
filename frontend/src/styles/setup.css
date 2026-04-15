@@ -1,0 +1,117 @@
+/* WorldSeed — Setup / Lobby page */
+
+.setup-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  background: var(--bg-void);
+  overflow-y: auto;
+  padding: 40px 20px 60px;
+}
+
+.setup-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--bright);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.setup-brand em { font-style: normal; color: var(--amber); }
+
+.setup-subtitle {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--ghost);
+  margin-bottom: 32px;
+}
+
+.setup-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.setup-card-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--ghost);
+  margin-bottom: 18px;
+}
+
+.setup-field {
+  margin-bottom: 14px;
+}
+
+.setup-field label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ghost);
+  margin-bottom: 4px;
+}
+
+/* Form controls are styled via shadcn ui components (Input, Select).
+   Only labels and layout rules live here. */
+
+.setup-field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.setup-field-row .setup-field {
+  flex: 1;
+}
+
+.setup-btn {
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border: 1px solid var(--amber);
+  border-radius: var(--radius);
+  background: var(--amber-dim);
+  color: var(--amber);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  margin-top: 8px;
+}
+
+.setup-btn:hover {
+  background: var(--amber-glow);
+}
+
+.setup-btn:active {
+  transform: scale(0.98);
+}
+
+.setup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.setup-error {
+  color: var(--rose);
+  font-size: 12px;
+  margin-top: 8px;
+}
+

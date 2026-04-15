@@ -1,0 +1,73 @@
+.idea/
+.claude/*
+!.claude/skills/
+!.claude/commands/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checking
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Node (OpenClaw plugin)
+node_modules/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Local OpenClaw config (use openclaw.example.json as template)
+openclaw.json
+
+# OS
+.DS_Store
+Thumbs.db
+.playwright-mcp/
+run-*.txt
+*-analysis-zh.txt
+docs/brainstorm/
+
+# ClawhHub installed skills (third-party, per-project)
+skills/.clawhub/
+skills/*/
+!skills/create-world/
+!skills/asset-sourcing/
+!skills/asset-sourcing/**
+
+# Godot client (removed from project)
+client/
+
+# Screenshots (dev artifacts)
+*.png
+!frontend/public/**/*.png
+!frontend/public/assets/scenes/**/*.png
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# UI experiments
+ui-next/
+
+# Vite cache
+.vite/
+
+# Local tmp folder
+tmp/

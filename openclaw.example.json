@@ -1,0 +1,21 @@
+{
+  "agents": {
+    "defaults": {
+      "model": "your-model"
+    }
+  },
+  "gateway": {
+    "mode": "local"
+  },
+  "plugins": {
+    "entries": {
+      "worldseed": {
+        "enabled": true,
+        "config": {
+          "serverUrl": "ws://localhost:8000/ws",
+          "gatewayToken": "worldseed-gw-token"
+        }
+      }
+    }
+  }
+}

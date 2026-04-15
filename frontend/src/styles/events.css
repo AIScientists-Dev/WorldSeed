@@ -1,0 +1,30 @@
+/* WorldSeed — Event feed and filter chips */
+
+/* ═══════════════════════ EVENTS ═══════════════════════ */
+.evt-row {
+  padding: 4px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  border-left: 3px solid var(--amber);
+  transition: background 0.08s;
+}
+
+.evt-row:hover { background: var(--bg-hover); }
+.evt-tick { color: var(--ghost); font-size: 12px; margin-right: 8px; }
+.evt-src { color: var(--amber); font-weight: 500; margin-right: 4px; }
+.evt-type { color: var(--ghost); font-style: italic; margin-right: 4px; }
+.evt-msg { color: var(--slate); }
+
+/* Inbox */
+.inbox-item {
+  padding: 4px 0 4px 10px;
+  font-size: 13px;
+  border-left: 2px solid transparent;
+  margin: 2px 0;
+}
+
+.inbox-item.is-whisper { border-left-color: var(--rose); }
+.inbox-item.is-evt { border-left-color: var(--amber); }
+.inbox-tick { color: var(--ghost); font-size: 12px; margin-right: 6px; }
+.inbox-src { font-weight: 500; }
+.inbox-src.gm { color: var(--rose); }

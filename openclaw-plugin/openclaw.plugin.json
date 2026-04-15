@@ -1,0 +1,20 @@
+{
+  "id": "worldseed",
+  "name": "WorldSeed",
+  "description": "Connect to a WorldSeed persistent world server.",
+  "channels": ["worldseed"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "serverUrl": {
+        "type": "string",
+        "description": "WorldSeed WebSocket URL (e.g. ws://localhost:8000/ws)"
+      },
+      "gatewayToken": {
+        "type": "string",
+        "description": "Gateway auth token (shown in WorldSeed server logs on startup)"
+      }
+    }
+  }
+}

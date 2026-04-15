@@ -1,0 +1,65 @@
+/* WorldSeed — Motion Design Tokens + Transition Classes
+ *
+ * Single source of truth for all timing values.
+ * No file in the project should contain bare ms or easing values.
+ *
+ * Aesthetic: animations like punctuation — help you read, but you
+ * don't notice them. Remove one and something feels "off".
+ */
+
+/* ── Tokens ── */
+
+:root {
+  /* Duration */
+  --duration-fast:   100ms;
+  --duration-normal: 200ms;
+  --duration-slow:   300ms;
+
+  /* Easing */
+  --ease-out:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index scale — single source of truth.
+     Components using Tailwind z-* classes note the token name in comments.
+     Components using inline styles reference var(--z-*) directly. */
+  --z-connection:   2;
+  --z-card-base:    5;
+  --z-entity:      10;
+  --z-card-hover:  20;
+  --z-agent:       25;
+  --z-controls:    40;  /* MapToolbar, GmPill — above zones, below bubbles */
+  --z-vignette:    44;  /* theater dim — above controls, below bubbles */
+  --z-overlay:     50;  /* OverlayCanvas, NarrativeBar — speech bubbles */
+  --z-theater:     55;  /* theater controls — above overlays */
+  --z-theater-backdrop: 90;
+  --z-theater-viewport: 100;
+}
+
+/* ── Typewriter cursor ── */
+
+.tw-text::after {
+  content: '';
+  display: inline-block;
+  width: 1.5px;
+  height: 0.75em;
+  background: var(--amber);
+  margin-left: 1px;
+  vertical-align: baseline;
+  animation: tw-blink 0.7s step-end infinite;
+}
+
+@keyframes tw-blink {
+  50% { opacity: 0; }
+}
+
+/* ── Accessibility ── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

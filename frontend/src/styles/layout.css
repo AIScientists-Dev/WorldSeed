@@ -1,0 +1,139 @@
+/* WorldSeed — Layout: content, GM controls, resize handles, panels */
+
+/* ═══════════════════════ LAYOUT ═══════════════════════ */
+.layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ═══════════════════════ CONTENT ═══════════════════════ */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+
+.content-main {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+}
+
+.content-right {
+  width: 400px;
+  min-width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  overflow: hidden;
+  border-left: 1px solid var(--border);
+}
+
+/* ═══════════════════════ RESIZE HANDLES ═══════════════════════ */
+.resize-handle-v {
+  width: 5px;
+  cursor: ew-resize;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+
+.resize-handle-v:hover, .resize-handle-v.dragging {
+  background: var(--amber);
+}
+
+/* ═══════════════════════ PANELS ═══════════════════════ */
+.panel {
+  background: var(--bg-panel);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.panel-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg-surface);
+}
+
+.panel-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ghost);
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px 0;
+}
+
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+
+/* ═══════════════════════ GM CONTROLS ═══════════════════════ */
+.whisper-controls {
+  padding-top: 4px;
+}
+
+.whisper-controls:not(:first-child) {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+/* ═══════════════════════ SCROLL NAV ═══════════════════════ */
+/* Hide the library's built-in follow button */
+.scroll-to-bottom-btn-hidden { display: none !important; }
+
+.whisper-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.whisper-input {
+  flex: 1;
+  font-family: var(--font-data);
+  font-size: 13px;
+  padding: 5px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--bright);
+  outline: none;
+}
+
+.whisper-input:focus {
+  border-color: var(--amber);
+}
+
+.whisper-input::placeholder { color: var(--ghost); }
+
+.whisper-feedback {
+  font-size: 11px;
+  color: var(--sage);
+  margin-top: 4px;
+}
+
+/* ═══════════════════════ THEATER MODE ═══════════════════════ */
+
+/* Cursor hidden during theater idle */
+.theater-cursor-hidden,
+.theater-cursor-hidden * {
+  cursor: none !important;
+}

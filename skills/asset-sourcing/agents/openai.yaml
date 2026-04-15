@@ -1,0 +1,4 @@
+interface:
+  display_name: "Asset Sourcing"
+  short_description: "Find and rank scene asset image candidates"
+  default_prompt: "Use $asset-sourcing to source scene asset image candidates for a WorldSeed scene. Choose queries and sources per entity, search independent sources in parallel when useful, generate a local review bundle, then apply visual review before showing any Top 1/2/3 picks."

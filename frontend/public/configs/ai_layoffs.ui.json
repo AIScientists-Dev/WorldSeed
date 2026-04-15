@@ -1,0 +1,213 @@
+{
+  "asset_pack": "ai_layoffs",
+  "rules": [
+    {
+      "match": {
+        "type": "space"
+      },
+      "scene": "zone",
+      "bind": {
+        "label": "id",
+        "connections": "connects_to"
+      }
+    },
+    {
+      "match": {
+        "type": "item"
+      },
+      "scene": "card",
+      "bind": {
+        "locate_by": "location",
+        "show": []
+      }
+    },
+    {
+      "match": {
+        "type": "resource"
+      },
+      "scene": "card",
+      "bind": {
+        "locate_by": "location",
+        "show": [
+          "status",
+          "doc_progress",
+          "remaining",
+          "hand_drawn_progress",
+          "tampered",
+          "fix_attempts"
+        ]
+      }
+    },
+    {
+      "match": {
+        "type": "concept"
+      },
+      "scene": "hidden"
+    },
+    {
+      "match": {
+        "type": "agent"
+      },
+      "scene": "avatar",
+      "bind": {
+        "locate_by": "location"
+      }
+    }
+  ],
+  "event_defaults": {
+    "bubble": "action"
+  },
+  "events": [
+    {
+      "match": "AI出图",
+      "bubble": "action",
+      "effect": "glow"
+    },
+    {
+      "match": "修bug",
+      "bubble": "action",
+      "effect": "glow"
+    },
+    {
+      "match": "加码",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "甩锅",
+      "bubble": "speech",
+      "effect": "shake"
+    },
+    {
+      "match": "离职",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "删库",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "炸了",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "舆情",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "媒体介入",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "派活",
+      "bubble": "speech"
+    },
+    {
+      "match": "催进度",
+      "bubble": "speech",
+      "effect": "shake"
+    },
+    {
+      "match": "突袭",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "二次裁员",
+      "bubble": "action",
+      "effect": "shake"
+    },
+    {
+      "match": "吃饭",
+      "bubble": "action"
+    },
+    {
+      "match": "健身",
+      "bubble": "action"
+    }
+  ],
+  "layout": {
+    "天台": {
+      "x": -90,
+      "y": -100,
+      "w": 195,
+      "h": 145,
+      "rotation": -2
+    },
+    "健身房": {
+      "x": 355,
+      "y": 35,
+      "w": 185,
+      "h": 140,
+      "rotation": 2
+    },
+    "工区": {
+      "x": 160,
+      "y": 160,
+      "w": 350,
+      "h": 300,
+      "rotation": 0
+    },
+    "老周工位": {
+      "x": 15,
+      "y": 175,
+      "w": 175,
+      "h": 160,
+      "rotation": -2
+    },
+    "会议室": {
+      "x": 475,
+      "y": 180,
+      "w": 180,
+      "h": 155,
+      "rotation": 2
+    },
+    "机房": {
+      "x": 25,
+      "y": 385,
+      "w": 170,
+      "h": 150,
+      "rotation": -2
+    },
+    "茶水间": {
+      "x": 455,
+      "y": 370,
+      "w": 175,
+      "h": 155,
+      "rotation": 2
+    },
+    "B1美食城": {
+      "x": 80,
+      "y": 700,
+      "w": 195,
+      "h": 148,
+      "rotation": -2
+    },
+    "停车场": {
+      "x": 260,
+      "y": 690,
+      "w": 210,
+      "h": 152,
+      "rotation": 0
+    },
+    "VP的家": {
+      "x": 680,
+      "y": 710,
+      "w": 180,
+      "h": 148,
+      "rotation": 2
+    },
+    "已离开": {
+      "x": 780,
+      "y": 420,
+      "w": 150,
+      "h": 100,
+      "rotation": 3
+    }
+  }
+}

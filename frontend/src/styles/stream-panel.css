@@ -1,0 +1,501 @@
+/* WorldSeed -- Stream Panel
+ *
+ * Narrative game log. Records grouped by tick.
+ * Visual hierarchy through typography alone (Tufte + Tschichold):
+ *   serif 13px = human voice (speech, agent thought, dm narrative)
+ *   sans/mono 11px = system voice (events, chips, meta)
+ * No left-border colors. Spacing creates structure.
+ * Wabi-sabi palette: kogecha, nezumi, rikyucha.
+ */
+
+/* ── Wabi-sabi palette (scoped to panel) ─────────── */
+.panel-body {
+  --wabi-kogecha: #5C4033;   /* speech — warm brown */
+  --wabi-nezumi: #8F8681;    /* system — warm grey */
+  --wabi-rikyucha: #806B55;  /* dm — tea brown */
+}
+
+/* ── Tick divider ────────────────────────────────── */
+
+.stream-tick-group + .stream-tick-group {
+  margin-top: 18px;
+}
+
+.stream-tick-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px 6px;
+  user-select: none;
+}
+
+.stream-tick-header::before,
+.stream-tick-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.stream-tick-label {
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ghost);
+  white-space: nowrap;
+  opacity: 0.65;
+}
+
+/* ── Replay tick highlight ───────────────────────── */
+.stream-tick-active {
+  border-left: 2px solid var(--amber);
+  background: rgba(245, 158, 11, 0.04);
+}
+.stream-tick-active .stream-tick-label {
+  color: var(--amber);
+  opacity: 1;
+}
+
+/* ── Base record ─────────────────────────────────── */
+.stream-record {
+  padding: 4px 18px;
+  border-left: none;
+  line-height: 1.55;
+}
+
+.stream-record:hover {
+  background: var(--bg-hover);
+}
+
+/* ── Shared inline elements ──────────────────────── */
+.stream-rec-agent {
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bright);
+}
+
+.stream-action-label {
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--wabi-nezumi);
+}
+
+.stream-rec-target {
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--wabi-nezumi);
+}
+
+.stream-compact-params {
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--wabi-nezumi);
+  opacity: 0.7;
+}
+
+.stream-meta-text {
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--wabi-nezumi);
+  opacity: 0.6;
+}
+
+/* ── Compact row (structural actions, meta) ──────── */
+.stream-compact {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.stream-meta-line {
+  opacity: 0.55;
+}
+
+.stream-meta-line:hover {
+  opacity: 1;
+}
+
+/* ── Badges ──────────────────────────────────────── */
+.stream-rec-badge {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.stream-rec-badge.success {
+  color: var(--sage);
+}
+
+.stream-rec-badge.fail {
+  color: var(--rose);
+  background: var(--rose-dim);
+}
+
+.stream-fail-reason {
+  font-family: var(--font-data);
+  font-size: 10px;
+  color: var(--rose);
+  padding: 2px 0 0 0;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+/* ── Action: compact chip (no free_text) ─────────── */
+.stream-action {
+  padding: 3px 18px;
+}
+
+.stream-action.is-fail {
+  background: var(--rose-dim);
+}
+
+.stream-action.is-speech {
+  padding: 6px 18px;
+}
+
+/* ── Action: dialogue (has free_text) ────────────── */
+.stream-dialogue {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stream-dialogue-text {
+  font-family: var(--font-narrative);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--bright);
+  padding: 2px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── DM narrative ────────────────────────────────── */
+.stream-dm {
+  padding: 4px 18px;
+}
+
+.stream-dm-tag {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--wabi-rikyucha);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.stream-dm-narrative {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--wabi-rikyucha);
+  padding: 2px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.stream-dm-effects {
+  padding: 4px 0 2px 0;
+  list-style: none;
+}
+
+.stream-dm-effects li {
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--wabi-nezumi);
+  padding: 1px 0;
+  line-height: 1.5;
+}
+
+.stream-dm-effects li::before {
+  content: '-> ';
+  color: var(--wabi-nezumi);
+  opacity: 0.5;
+}
+
+.stream-dm-meta {
+  display: none;
+}
+
+/* ── Event / consequence ─────────────────────────── */
+.stream-event-rec {
+  padding: 4px 18px;
+}
+
+.stream-event-rec.is-consequence {
+  opacity: 0.65;
+}
+
+.stream-event-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stream-event-detail {
+  font-family: var(--font-narrative);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--bright);
+}
+
+.stream-event-scope {
+  font-family: var(--font-data);
+  font-size: 9px;
+  color: var(--ghost);
+  opacity: 0.5;
+}
+
+/* ── Register ────────────────────────────────────── */
+.stream-register {
+  padding: 3px 18px;
+}
+
+/* ── Agent text (session responses) ──────────────── */
+.stream-agent-text {
+  padding: 4px 18px;
+}
+
+.stream-agent-text-head {
+  padding-bottom: 2px;
+}
+
+.stream-agent-text-body {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--wabi-nezumi);
+  font-style: italic;
+  cursor: pointer;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.stream-agent-text-body:hover {
+  color: var(--slate);
+}
+
+.stream-agent-text-tools {
+  padding: 4px 0 0 0;
+}
+
+.stream-agent-tc {
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--ghost);
+  opacity: 0.5;
+  padding: 1px 0;
+}
+
+/* ── GM records ──────────────────────────────────── */
+.stream-gm {
+  padding: 4px 18px;
+}
+
+.stream-gm-tag {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--wabi-rikyucha);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+/* ── Highlight ───────────────────────────────────── */
+.stream-highlight {
+  border-left-color: var(--highlight);
+  background: var(--highlight-dim);
+  padding: 6px 18px 6px 20px;
+}
+
+.stream-highlight-tag {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--highlight);
+  background: rgba(217, 119, 6, 0.12);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.stream-highlight-title {
+  font-family: var(--font-narrative);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--bright);
+}
+
+.stream-highlight-tldr {
+  font-family: var(--font-narrative);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ghost);
+  margin-top: 2px;
+}
+
+.stream-highlight-expand {
+  font-family: var(--font-data);
+  font-size: 10px;
+  color: var(--highlight);
+  cursor: pointer;
+  margin-top: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.stream-highlight-expand:hover {
+  opacity: 1;
+}
+
+.stream-highlight-label {
+  font-family: var(--font-narrative);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--slate);
+  padding: 6px 0 0 0;
+}
+
+/* ── Chapters view ───────────────────────────────── */
+.stream-chapters {
+  padding: 28px 32px;
+  max-width: 62ch;
+  margin: 0 auto;
+  font-family: var(--font-narrative);
+  line-height: 1.9;
+  color: var(--bright);
+}
+
+.stream-chapter-sep {
+  text-align: center;
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--ghost);
+  letter-spacing: 0.1em;
+  padding: 28px 0 8px;
+}
+
+.stream-chapter-meta {
+  text-align: center;
+  font-family: var(--font-data);
+  font-size: 10px;
+  color: var(--ghost);
+  letter-spacing: 0.1em;
+  padding: 0 0 6px;
+}
+
+.stream-chapter-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  padding: 0 0 12px;
+}
+
+.stream-chapter-body {
+  font-size: 15px;
+  line-height: 1.9;
+  margin-top: 12px;
+}
+
+/* ── Whisper ─────────────────────────────────────── */
+.stream-whisper {
+  padding: 4px 18px;
+}
+
+.stream-whisper-tag {
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--ghost);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.stream-whisper-text {
+  font-family: var(--font-narrative);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--bright);
+  padding: 2px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Wakeup (only when filtered) ─────────────────── */
+.stream-wake {
+  opacity: 0.45;
+}
+
+
+/* ── Kind filter chips (PastRunModal) ────────────── */
+.stream-panel-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.stream-kind-chip {
+  font-family: var(--font-data);
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ghost);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+}
+
+.stream-kind-chip:hover {
+  border-color: var(--border-hi);
+  color: var(--slate);
+}
+
+.stream-kind-chip.active {
+  background: var(--amber-dim);
+  border-color: var(--amber);
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.stream-sse-status {
+  margin-left: auto;
+  font-family: var(--font-data);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ghost);
+  opacity: 0.65;
+}
+
+.stream-sse-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ghost);
+}
+
+.stream-sse-dot.connected {
+  background: var(--sage);
+}
