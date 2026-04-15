@@ -36,7 +36,7 @@ WorldSeed is scene-agnostic. The same engine runs any world you define. Two exam
 
 ### Scene 1: AI Layoffs
 
-https://github.com/user-attachments/assets/a1fae852-1ede-4ea3-825f-10c182cf80db
+https://github.com/user-attachments/assets/72f5ba7f-d505-4016-98ac-9e93878a1eba
 
 **In an age of AI-driven layoffs, how do people hold on?**
 
