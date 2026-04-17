@@ -11,7 +11,7 @@ Give AI a world. Make it yours.
 
 [![Demo](https://img.shields.io/badge/Demo-→-blue?style=for-the-badge)](https://worldseed.morphmind.ai/demo)
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE) [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/x9mtbMEx) [![WeChat](https://img.shields.io/badge/WeChat-Scan%20to%20Join-07C160?style=flat-square&logo=wechat&logoColor=white)](#community) [![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/morphmind__ai?s=11)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE) [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/x9mtbMEx) [![WeChat](https://img.shields.io/badge/WeChat-Scan%20to%20Join-07C160?style=flat-square&logo=wechat&logoColor=white)](#community) [![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/morphmind__ai?s=11) [![DevHunt](https://img.shields.io/badge/DevHunt-Featured-orange?style=flat-square)](https://devhunt.org/tool/worldseed)
 
 [**Getting Started**](#getting-started) · [**Demo**](https://worldseed.morphmind.ai/demo) · [**Docs**](docs/ARCHITECTURE.md)
 
