@@ -66,6 +66,10 @@ client/
 # UI experiments
 ui-next/
 
+# Runtime workspace exports
+frontend/public/workspaces/*
+!frontend/public/workspaces/.gitkeep
+
 # Vite cache
 .vite/
 

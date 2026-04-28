@@ -408,6 +408,35 @@ Aggregates a numeric property across all matching entities:
     op: "<", right: 100 }
 ```
 
+#### max_by
+
+```
+max_by(type=ENTITY_TYPE, property=PROP_NAME)
+max_by(type=ENTITY_TYPE, property=PROP_NAME, where=CONDITION)
+```
+
+Returns the entity ID with the largest numeric value of `property` across the matching entities, or `""` when there is a tie or no matching entity. The `""` sentinel is intentional — a consequence can branch on it to ask the director for a tiebreak.
+
+```yaml
+# Pick the agent with most influence
+- { operator: set, target: "winner.id",
+    value: "max_by(type=agent, property=influence)" }
+```
+
+#### max_by_key
+
+```
+max_by_key(PATH)
+```
+
+Same idea as `max_by`, but operating on a dict-shaped property. Returns the key whose value is largest, or `""` on tie / empty / non-numeric values. Useful for vote tallies and similar dictionary aggregations:
+
+```yaml
+# Winner of a vote stored as { yes: 3, no: 2, abstain: 1 }
+- { operator: set, target: "vote.winner",
+    value: "max_by_key(vote.tally)" }
+```
+
 #### event
 
 ```
@@ -420,6 +449,38 @@ Returns a list of matching events from the event log. Each event is a dict with 
 # Check if an alarm has been raised
 - { operator: exists, expression: "event(type=alarm)" }
 ```
+
+#### events_since
+
+```
+events_since(type=EVENT_TYPE, max_age_ticks=N)
+```
+
+Returns events of the given type within the last `N` ticks (inclusive on the lower bound). Use this for time-windowed detection — "any X in the last few ticks":
+
+```yaml
+# Fire if no progress event in 10 ticks
+- { operator: not,
+    condition: { operator: exists,
+                 expression: "events_since(type=progress, max_age_ticks=10)" } }
+```
+
+#### last_event_tick
+
+```
+last_event_tick(type=EVENT_TYPE)
+```
+
+Returns the highest tick at which an event of that type was seen, or `-1` if none. Combine with `$tick` to express "ticks since last X":
+
+```yaml
+# 20 ticks since last accepted paper → convergence
+- { operator: check,
+    left: "$tick - last_event_tick(type=paper_accepted)",
+    op: ">=", right: 20 }
+```
+
+The `-1` cold-start sentinel makes the comparison fire after enough total ticks even if the event never happened, which is usually what you want for timeouts.
 
 #### random
 

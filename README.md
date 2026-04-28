@@ -6,7 +6,7 @@
 
 # WorldSeed
 
-**More is Different: a multi-agent world engine for emergent behavior.**
+**More is Different: a world engine for emergent multi-agent outcomes.**
 
 [![Demo](https://img.shields.io/badge/Demo-→-blue?style=for-the-badge)](https://worldseed.morphmind.ai/demo)
 
@@ -22,19 +22,25 @@
 
 ## What is WorldSeed?
 
-WorldSeed is an environment engine for multi-agent worlds. You define the scene, characters, rules, and what each agent can see.
+Don't build a workflow. Seed a world.
 
-Once a run starts, the agents do everything else: decide what to do, talk to each other, deceive, ally, betray. You can watch from above, whisper privately to any agent, or step into a character and play alongside them. The same engine runs any world you define. Every run is different because nobody scripted it.
+`rules + different agents + consequences -> emergence`
 
-**Write your rules. Behavior emerges.**
+Define roles, rules, private information, actions, and consequences. Then agents interact until useful artifacts emerge.
+
+You can watch from above, intervene, or step into a character. The same engine can run production rooms, simulations, games, and fictional worlds.
 
 ---
 
 ## Demo
 
-WorldSeed is scene-agnostic. The same engine runs any world you define. Two example scenes ship with the repo:
+WorldSeed is scene-agnostic. The same engine runs any world you define.
 
-### Scene 1: AI Layoffs
+### Scene 1: AI Tool Pilot Lab
+
+One agent studies a new API. Builder agents create competing demos. Critics reject anything generic. Audience agents judge what feels useful. A curator ships the strongest artifact with its trail of attempts, critiques, and revisions.
+
+### Scene 2: AI Layoffs
 
 https://github.com/user-attachments/assets/d43f5d22-1ba8-4483-b720-145b244ddb8c
 
@@ -55,7 +61,7 @@ Four people in this office, each with their own play running:
 
 [Try it locally](#getting-started)
 
-### Scene 2: Teahouse Espionage
+### Scene 3: Teahouse Espionage
 
 **Same engine. Different YAML. Completely different world.**
 
@@ -102,7 +108,10 @@ Open the dashboard at `http://localhost:8000`. Three ways to experience it:
 
 Every run is different. Past runs are preserved and replayable.
 
-See [QUICKSTART.md](QUICKSTART.md) for the full setup guide, including OpenClaw integration, GM controls, and troubleshooting.
+Choose the runtime guide you need:
+
+- Dashboard and OpenClaw agents: [QUICKSTART.md](QUICKSTART.md)
+- Codex subagents: [Codex Subagents Adapter](docs/codex-subagents/00-core.md), then [Scenario Architecture](docs/codex-subagents/05-scenario-architecture.md)
 
 ---
 
@@ -128,7 +137,7 @@ WorldSeed runs on a tick loop over a world you declared in YAML. A **tick** is o
 
 **Plug-in points:**
 
-- **Any agent can connect.** Speaks HTTP or WebSocket; ships with [OpenClaw](https://github.com/OpenClaw).
+- **Bring your own agents.** OpenClaw agents can connect over WebSocket. Codex subagents can connect through workspace actions and HTTP endpoints.
 - **Any LLM can be the DM.** Works with any [LiteLLM](https://docs.litellm.ai/docs/providers)-supported model.
 
 For the full runtime plumbing (endpoints, tick scheduling, consequences, inbox delivery), see [Architecture](docs/ARCHITECTURE.md). See a real scene YAML in [`configs/teahouse.yaml`](configs/teahouse.yaml) or the full schema in [Scene Config Spec](configs/SCENE_CONFIG.md).
@@ -142,7 +151,7 @@ Describe your world in a prompt, let AI generate the YAML, then hand-craft which
 **Generate with AI:**
 
 ```
-/create-world "A reality show on a space station, six contestants, one eliminated each round"
+/create-world "An AI tool pilot lab where builders create competing demos, critics reject generic outputs, and a curator ships the strongest artifact"
 ```
 
 The `create-world` skill produces both YAML scene config and UI config, validated and ready to run.

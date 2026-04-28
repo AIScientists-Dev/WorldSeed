@@ -1135,6 +1135,58 @@ The narrator submits a `narrate` action each interval, producing a `narration` e
 
 ---
 
+## `director` — External Orchestration Hooks
+
+Optional. When present and `enabled: true`, the engine exposes attention signals through HTTP so an external main agent (Codex, Claude, or any custom watcher) can orchestrate the world without polling. Default: section omitted → engine behaves exactly as before.
+
+### Syntax
+
+```yaml
+director:
+  enabled: true
+  dm_mode: signal              # "signal" | "internal"
+  max_pending_dm: 64
+  checkpoint:
+    every_events: 8
+    every_minutes: 5
+    every_ticks: null
+    on_event_types:
+      - draft_submitted
+      - vote_closed
+    ignore_event_scopes: ["admin"]
+    ignore_event_types: ["action_rejected"]
+```
+
+### Fields
+
+- `enabled` (bool, default `false`) — master switch. When `false`, the entire director layer is a no-op.
+- `dm_mode` (`"internal"` | `"signal"`, default `"signal"`) — how DM judgments are resolved. `internal` keeps the existing in-process provider path. `signal` enqueues a `dm_request` for an external watcher to resolve via `POST /api/director/dm/{id}/resolve`.
+- `max_pending_dm` (int ≥ 1, default `64`) — cap on queued DM requests. Once full, new DM intents auto-fail with a fallback narrative; protects against runaway scenes when the watcher stalls.
+- `checkpoint` — cadence policy for `checkpoint` signals. Each dimension is independent; any one crossing its threshold fires.
+
+### Checkpoint cadence
+
+- `every_events: int | null` (default `8`) — fires after this many *meaningful* new events. Filtered through `ignore_event_scopes` and `ignore_event_types`.
+- `every_minutes: float | null` (default `5.0`) — fallback wall-clock trigger. Catches stuck or idle worlds.
+- `every_ticks: int | null` (default `null`) — fires every N ticks. Useful for simulation-heavy worlds where ticks are meaningful.
+- `on_event_types: list[str]` — forced fire whenever a new event of any of these types appears. Use for explicit scenario milestones (`draft_submitted`, `vote_closed`, etc.).
+- `ignore_event_scopes: list[str]` (default `["admin"]`) — scopes that count as bookkeeping noise and never trigger checkpoints.
+- `ignore_event_types: list[str]` (default `["action_rejected"]`) — types that count as bookkeeping noise.
+
+### Signal kinds
+
+When `enabled: true`, three kinds of `DirectorSignal` may appear at `/api/director/signals`:
+
+- `dm_request` — only when `dm_mode: signal`. A `PendingDMRequest` waits for `POST /api/director/dm/{id}/resolve { narrative, effects }`.
+- `urgent` — an agent just became wake-eligible (push event from someone else, or a whisper). Mirrors the existing in-engine wake path; the watcher can use it to do extra orchestration.
+- `checkpoint` — cadence said "main may want to look here". Payload is deterministic metadata (event-type counts, recent refs, pending DM count) — never an LLM summary.
+
+`urgent` and `checkpoint` are acked via `POST /api/director/signals/{id}/ack`. `dm_request` must be resolved through the dedicated `/resolve` endpoint.
+
+The full operational contract for a watcher / main-agent runtime is in `docs-internal/plans/main-agent-runbook.md` (internal) or `MAIN_AGENT_RUNBOOK.md` if shipped publicly.
+
+---
+
 ## Design Guide
 
 World design checklists, action design, resource modeling, patterns, anti-patterns, and testing are documented in [SCENE_DESIGN.md](SCENE_DESIGN.md).

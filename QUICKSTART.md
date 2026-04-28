@@ -1,4 +1,9 @@
-# Quick Start
+# Dashboard / OpenClaw Quick Start
+
+This guide is for dashboard runs and OpenClaw agents.
+
+For Codex subagents, read [Codex Subagents Adapter](docs/codex-subagents/00-core.md)
+first, then [Scenario Architecture](docs/codex-subagents/05-scenario-architecture.md).
 
 ## Prerequisites
 
