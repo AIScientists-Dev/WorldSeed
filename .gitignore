@@ -59,6 +59,7 @@ client/
 *.png
 !frontend/public/**/*.png
 !frontend/public/assets/scenes/**/*.png
+!docs/assets/**/*.png
 
 # TypeScript build cache
 *.tsbuildinfo
