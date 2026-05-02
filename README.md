@@ -45,7 +45,7 @@ In this run, the goal was to lower val_loss on a 5M GPT trained on TinyStories. 
 - 100 hypotheses, 86 experiments, 72 peer-reviewed papers
 - val_loss down 24.7%
 
-Every paper is auditable end-to-end: hypothesis, commit, experiment, verified result, citations, reviewer reasoning.
+Every paper is auditable end-to-end: hypothesis, commit, experiment, verified result, citations, reviewer reasoning, forming a search evolution graph.
 
 <p align="center">
 <img src="docs/assets/autoresearch-papers-graph.png" alt="72-paper evolution graph: nodes are papers, edges citations; the right panel shows a paper's claim, val_loss, and reasoning" width="720">
