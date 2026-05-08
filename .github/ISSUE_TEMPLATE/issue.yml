@@ -1,0 +1,24 @@
+name: New issue
+description: Report a bug, request a feature, or ask a question.
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - Bug
+        - Feature request
+        - Question
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        For bugs: what happened, steps to reproduce, environment (OS / Python / commit).
+        For features: the problem and your proposed solution.
+        For questions: just ask.
+    validations:
+      required: true
